@@ -5,11 +5,11 @@ import { DecksContext } from "../Decks/DeckContextFile";
 import { useNavigation } from "@react-navigation/native";
 
 export default () => {
-  const { state } = useContext(DecksContext);
+  const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
 
-  // Função para renderizar cada item da lista
   const renderItem = (item) => (
+    console.log("state.decks: ", state.decks),
     <ListItem
       key={item.id}
       containerStyle={styles.itemContainer}
@@ -24,16 +24,12 @@ export default () => {
     </ListItem>
   );
 
-  const decks = state?.decks ?? [];
-  console.log("Tamanho de state.decks:", decks.length);
 
-  // Verifica se há itens na lista
-  if (decks.length === 0) {
+  if (state.decks.length === 0) {
     return (
       <View style={styles.container}>
         <Text style={styles.debugText}>Nenhum item encontrado.</Text>
         <Text style={styles.debugText}>Adicione itens à lista para visualizá-los.</Text>
-        {/* Item de exemplo para debugging */}
         <ListItem containerStyle={styles.itemContainer}>
           <ListItem.Content>
             <ListItem.Title style={styles.deckName}>Exemplo de Item</ListItem.Title>
@@ -49,7 +45,7 @@ export default () => {
   return (
     <View style={styles.container}>
       <Text style={styles.debugText}>Componente sendo renderizado...</Text>
-      {decks.map(renderItem)}
+      {state.decks.map(renderItem)}
     </View>
   );
 };

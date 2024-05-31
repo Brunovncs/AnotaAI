@@ -6,6 +6,7 @@ import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 
 import { DecksProvider, DecksContext } from "../Decks/DeckContextFile";
 
+import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
 import CardBrowser from "../screens/CardBrowser";
 import Estatisticas from "../screens/Estatisticas";

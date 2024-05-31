@@ -30,7 +30,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import users from "./users"; // Import the users list
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Drawer from "./Drawer/Drawer";
-import AddCard from "./screens/AddCard";
+import AddDeck from "./screens/AddDeck";
 
 const Stack = createNativeStackNavigator();
 
@@ -158,8 +158,8 @@ export default function App() {
         />
 
         <Stack.Screen
-          name="AddCard"
-          component={AddCard}
+          name="AddDeck"
+          component={AddDeck}
           options={{
             title: "Adicionar Carta",
           }}
