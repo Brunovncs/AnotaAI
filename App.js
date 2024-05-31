@@ -13,7 +13,6 @@
 //   );
 // }
 
-
 //TELA LOGIN
 import React, { useState } from "react";
 import {
@@ -30,10 +29,10 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import users from "./users"; // Import the users list
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Drawer from "./Drawer/Drawer"
+import Drawer from "./Drawer/Drawer";
+import AddCard from "./screens/AddCard";
 
 const Stack = createNativeStackNavigator();
-
 
 function TelaLogin() {
   const [form, setForm] = useState({
@@ -147,10 +146,17 @@ export default function App() {
           component={Drawer}
           options={{
             title: " ",
-            headerBackVisible: false
-        }}
+            headerBackVisible: false,
+          }}
         />
 
+        <Stack.Screen
+          name="AddCard"
+          component={AddCard}
+          options={{
+            title: "Adicionar Carta",
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
