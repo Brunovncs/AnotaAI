@@ -1,31 +1,31 @@
 import React, { createContext, useEffect, useReducer } from "react";
-import events from "./cards";
+import decks from "./decks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const EventsContext = createContext({});
-const initialState = { events };
+const DecksContext = createContext({});
+const initialState = { decks };
 
 const actions = {
   // Adicione esta ação ao seu objeto de ações
-  updateEventIsChecked(state, action) {
+  updateDeckIsChecked(state, action) {
     const { id, isChecked } = action.payload;
-    const updatedEvents = state.events.map((e) => {
+    const updatedDecks = state.decks.map((e) => {
       if (e.id === id) {
         return {...e, isChecked };
       }
       return e;
     });
-    saveEvents(updatedEvents);
+    saveDecks(updatedDecks);
     return {
      ...state,
-      events: updatedEvents,
+      decks: updatedDecks,
     };
   },
-  markEventAsChecked(state, action) {
-    const { event, nome, quantidade } = action.payload;
+  markDeckAsChecked(state, action) {
+    const { deck, nome, quantidade } = action.payload;
     
-    const updatedEvents = state.events.map((e) => {
-        if (e.id === event.id) {
+    const updatedDecks = state.decks.map((e) => {
+        if (e.id === deck.id) {
           // Verifica se há ingressos disponíveis para reserva
           if (e.ingDisp >= quantidade) {
             return {
@@ -41,78 +41,78 @@ const actions = {
         }
       return e;
     });
-    saveEvents(updatedEvents);
+    saveDecks(updatedDecks);
     return {
       ...state,
-      events: updatedEvents,
+      decks: updatedDecks,
     };
   },
-  unmarkEventAsChecked(state, action) {
+  unmarkDeckAsChecked(state, action) {
     const eventId = action.payload.id; // Ajuste aqui para acessar a propriedade 'id' corretamente
-    const updatedEvents = state.events.map((u) =>
+    const updatedDecks = state.decks.map((u) =>
       u.id === eventId? {...u, isChecked: false } : u
     );
-    saveEvents(updatedEvents);
+    saveDecks(updatedDecks);
     return {
      ...state,
-      events: updatedEvents,
+      decks: updatedDecks,
     };
   },  
-  deleteAllEvents(state, action) {
-    deleteEvents();
+  deleteAllDecks(state, action) {
+    deleteDecks();
     return {
       ...state,
-      events: [],
+      decks: [],
     };
   },
-  carregarEvents(state, action) {
-    const loadedEvents = action.payload.events;
+  carregarDecks(state, action) {
+    const loadedDecks = action.payload.decks;
     return {
       ...state,
-      events: loadedEvents,
+      decks: loadedDecks,
     };
   },
   gerarRandom(state, action) {
-    const loadedEvents = action.payload;
+    const loadedDecks = action.payload;
     return {
       ...state,
-      events: loadEvents,
+      decks: loadDecks,
     };
   },
-  deleteEvent(state, action) {
-    const event = action.payload;
-    const updatedEvents = state.events.filter((u) => u.id !== event.id);
+  deleteDeck(state, action) {
+    const deck = action.payload;
+    const updatedDecks = state.decks.filter((u) => u.id !== deck.id);
     return {
       ...state, //opcional no caso de 1 estado, se tiver mais estados precisa clonalos com essa linha
-      events: updatedEvents,
+      decks: updatedDecks,
     }; //estado é evoluido
   },
-  createEvent(state, action) {
-    const event = action.payload;
-    event.id = Math.random();
-    const updatedEvents = [...state.events, event];
-    saveEvents(updatedEvents);
+  createDeck(state, action) {
+    const deck = action.payload;
+    deck.id = Math.random();
+    const updatedDecks = [...state.decks, deck];
+    saveDecks(updatedDecks);
     return {
       ...state,
-      events: updatedEvents,
+      decks: updatedDecks,
     };
   },
-  updateEvent(state, action) {
+  updateDeck(state, action) {
     const updated = action.payload;
-    const updatedEvents = state.events.map((u) =>
+    const updatedDecks = state.decks.map((u) =>
       u.id === updated.id ? updated : u
     );
-    saveEvents(updatedEvents);
+    saveDecks(updatedDecks);
     return {
       ...state,
-      events: updatedEvents,
+      decks: updatedDecks,
     };
   },
-  updateEventIsFav(state, action) {
+  updateDeckIsFav(state, action) {
     const { id, isFav } = action.payload;
   
     // Atualize o evento com o novo estado de favorito
-    const updatedEvents = state.events.map((e) => {
+    const updatedDecks = state.decks.map((e) => {
       if (e.id === id) {
         return { ...e, isFav };
       }
@@ -120,7 +120,7 @@ const actions = {
     });
   
     // Reordene os eventos com base no favoritismo, colocando os eventos favoritos no topo da lista
-    const sortedEvents = updatedEvents.sort((a, b) => {
+    const sortedDecks = updatedDecks.sort((a, b) => {
       if (a.isFav && !b.isFav) {
         return -1; // Coloca 'a' (evento favorito) antes de 'b' (evento não favorito)
       } else if (!a.isFav && b.isFav) {
@@ -131,58 +131,58 @@ const actions = {
     });
   
     // Salve os eventos atualizados no AsyncStorage
-    saveEvents(sortedEvents);
+    saveDecks(sortedDecks);
   
     // Retorne o novo estado com os eventos reordenados
     return {
       ...state,
-      events: sortedEvents,
+      decks: sortedDecks,
     };
   },
-  filterEventsByName(state, action) {
+  filterDecksByName(state, action) {
     const { name } = action.payload;
-    const filteredEvents = state.events.filter(event => event.name.toLowerCase().includes(name.toLowerCase()));
+    const filteredDecks = state.decks.filter(deck => deck.name.toLowerCase().includes(name.toLowerCase()));
     return {
      ...state,
-      events: filteredEvents,
+      decks: filteredDecks,
     };
   },
   clearFilter(state, action) {
     return {
       ...state,
-      events: initialState.events, // Carrega todos os eventos novamente
+      decks: initialState.decks, // Carrega todos os eventos novamente
     };
   },
 };
 
-async function saveEvents(events) {
+async function saveDecks(decks) {
   try {
-    await AsyncStorage.setItem("events", JSON.stringify(events));
+    await AsyncStorage.setItem("decks", JSON.stringify(decks));
   } catch (error) {
     console.error("Error ao salvar os usuarios no AsyncStorage: ", error);
   }
 }
 
-async function deleteEvents(events) {
+async function deleteDecks(decks) {
   try {
-    await AsyncStorage.removeItem("events");
+    await AsyncStorage.removeItem("decks");
     console.log("Usuarios removidos com sucesso");
   } catch (error) {
     console.log("Erro ao remover os usuarios do AsyncStorage", error);
   }
 }
 
-async function loadEvents() {
+async function loadDecks() {
   try {
-    const events = await AsyncStorage.getItem("events");
-    return { events: events ? JSON.parse(events) : [] };
+    const decks = await AsyncStorage.getItem("decks");
+    return { decks: decks ? JSON.parse(decks) : [] };
   } catch (error) {
     console.error("Erro ao carregar os usuarios do AsyncStorage", error);
-    return { events: [] };
+    return { decks: [] };
   }
 }
 
-export const CardsProvider = (props) => {
+export const DecksProvider = (props) => {
   function reducer(state, action) {
     const fn = actions[action.type];
     return fn ? fn(state, action) : state;
@@ -192,17 +192,17 @@ export const CardsProvider = (props) => {
 
   useEffect(() => {
     async function fetchData() {
-      const loadedEvents = await loadEvents();
-      dispatch({ type: "carregarEventos", payload: loadedEvents });
+      const loadedDecks = await loadDecks();
+      dispatch({ type: "carregarDecks", payload: loadedDecks });
     }
     fetchData();
   }, []);
 
   return (
-    <EventsContext.Provider value={{ state, dispatch }}>
+    <DecksContext.Provider value={{ state, dispatch }}>
       {props.children}
-    </EventsContext.Provider>
+    </DecksContext.Provider>
   );
 };
 
-export { EventsContext };
+export { DecksContext };

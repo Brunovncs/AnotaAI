@@ -53,7 +53,7 @@ function TelaLogin() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#e8ecf4" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffeaa7" }}>
       <View style={styles.container}>
         <KeyboardAwareScrollView>
           <View style={styles.header}>
@@ -62,22 +62,22 @@ function TelaLogin() {
               resizeMode="contain"
               style={styles.headerImg}
               source={{
-                uri: "https://assets.withfra.me/SignIn.2.png",
+                uri: "https://cdn-icons-png.flaticon.com/128/889/889648.png",
               }}
             />
 
             <Text style={styles.title}>
-              Sign in to <Text style={{ color: "#075eec" }}>MyApp</Text>
+              A<Text style={{ color: "#d63031" }}>nota</Text>AI!
             </Text>
 
             <Text style={styles.subtitle}>
-              Get access to your portfolio and more
+              O seu próprio aplicativo de flashcards
             </Text>
           </View>
 
           <View style={styles.form}>
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Email address</Text>
+              <Text style={styles.inputLabel}>Endereço de email</Text>
 
               <TextInput
                 autoCapitalize="none"
@@ -85,7 +85,7 @@ function TelaLogin() {
                 clearButtonMode="while-editing"
                 keyboardType="email-address"
                 onChangeText={(email) => setForm({ ...form, email })}
-                placeholder="john@example.com"
+                placeholder="maria@exemplo.com"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 value={form.email}
@@ -93,7 +93,7 @@ function TelaLogin() {
             </View>
 
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Password</Text>
+              <Text style={styles.inputLabel}>Senha</Text>
 
               <TextInput
                 autoCorrect={false}
@@ -110,12 +110,12 @@ function TelaLogin() {
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleSignIn}>
                 <View style={styles.btn}>
-                  <Text style={styles.btnText}>Sign in</Text>
+                  <Text style={styles.btnText}>Entrar</Text>
                 </View>
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.formLink}>Forgot password?</Text>
+            <Text style={styles.formLink}>Esqueceu a senha?</Text>
           </View>
         </KeyboardAwareScrollView>
 
@@ -126,8 +126,8 @@ function TelaLogin() {
           style={{ marginTop: "auto" }}
         >
           <Text style={styles.formFooter}>
-            Don't have an account?{" "}
-            <Text style={{ textDecorationLine: "underline" }}>Sign up</Text>
+            Não possui uma conta?{" "}
+            <Text style={{ textDecorationLine: "underline" }}>Cadastre-se</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -139,7 +139,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name=" " component={TelaLogin} />
+        <Stack.Screen
+        name=" "
+        component={TelaLogin}
+        options={{
+          headerShown: false,
+        }}
+        />
 
         <Stack.Screen
           name="Drawer"
@@ -147,6 +153,7 @@ export default function App() {
           options={{
             title: " ",
             headerBackVisible: false,
+            headerShown: false,
           }}
         />
 
@@ -164,7 +171,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
+    paddingVertical: 90,
     paddingHorizontal: 0,
     flexGrow: 1,
     flexShrink: 1,
@@ -187,8 +194,8 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
     alignSelf: "center",
     marginBottom: 36,
   },
@@ -206,7 +213,7 @@ const styles = StyleSheet.create({
   formLink: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#075eec",
+    color: "#ff7675",
     textAlign: "center",
   },
   formFooter: {
@@ -245,8 +252,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,
-    backgroundColor: "#075eec",
-    borderColor: "#075eec",
+    backgroundColor: "#ff7675",
+    borderColor: "#ff7675",
   },
   btnText: {
     fontSize: 18,

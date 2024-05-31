@@ -4,31 +4,31 @@ import { useNavigation } from "@react-navigation/native";
 import { Button, Icon } from "@rneui/themed";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 
-import { CardsProvider, EventsContext } from "../Cards/CardContextFile";
+import { DecksProvider, DecksContext } from "../Decks/DeckContextFile";
 
-import LoginScreen from "../screens/LoginScreen";
+import DeckList from "../screens/DeckList";
 import CardBrowser from "../screens/CardBrowser";
 import Estatisticas from "../screens/Estatisticas";
 
 const Drawer = createDrawerNavigator();
 
 export default (props) => (
-  <CardsProvider>
+  <DecksProvider>
     <Drawer.Navigator
-      initialRouteName="LoginScreen01"
+      initialRouteName="Lista_de_Decks"
       screenOptions={screenOptions}
     >
       <Drawer.Screen // Tela de Login
-        name="LoginScreen01"
-        component={LoginScreen}
+        name="Lista_de_Decks"
+        component={DeckList}
         options={({ navigation }) => {
-          const { dispatch } = useContext(EventsContext);
+          const { dispatch } = useContext(DecksContext);
           return {
             title: "Decks",
             headerRight: () =>         
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Button
-              onPress={() => props.navigation.navigate("AddCard")}
+              onPress={() => props.navigation.navigate("AddDeck")}
               type="clear" // pode ser solid ou outline, nesse caso é sem fundo
               icon={<Icon name="add" size={25} color="white" />}
             />
@@ -44,7 +44,7 @@ export default (props) => (
         name="BrowserScreen"
         component={CardBrowser}
         options={({ navigation }) => {
-          const { dispatch } = useContext(EventsContext);
+          const { dispatch } = useContext(DecksContext);
           return {
             title: "Card Browser",
           };
@@ -54,7 +54,7 @@ export default (props) => (
         name="Estatísticas"
         component={Estatisticas}
         options={({ navigation }) => {
-          const { dispatch } = useContext(EventsContext);
+          const { dispatch } = useContext(DecksContext);
           return {
             title: "Estatísticas",
           };
@@ -70,12 +70,12 @@ export default (props) => (
 
       {/* Outras telas Drawer aqui */}
     </Drawer.Navigator>
-  </CardsProvider>
+  </DecksProvider>
 );
 
 const screenOptions = {
   headerStyle: {
-    backgroundColor: "#333",
+    backgroundColor: "#e17055",
   },
   headerTintColor: "#fff",
   headerTitleStyle: {

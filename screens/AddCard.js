@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import { View, Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
-import { EventsContext } from "../Cards/CardContextFile";
+import { DecksContext } from "../Decks/DeckContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 
 export default () => {
-  const { state, dispatch } = useContext(EventsContext);
+  const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const [perguntaText, setPerguntaText] = useState('');
   const [respostaText, setRespostaText] = useState('');
