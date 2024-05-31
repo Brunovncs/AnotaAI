@@ -1,11 +1,6 @@
 import React, { useContext } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { ListItem } from "react-native-elements";
 import { DecksContext } from "../Decks/DeckContextFile";
 import { useNavigation } from "@react-navigation/native";
 
@@ -13,56 +8,48 @@ export default () => {
   const { state } = useContext(DecksContext);
   const navigation = useNavigation();
 
-  console.log("State decks:", state.decks);
-
   // Função para renderizar cada item da lista
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.itemContainer}
+  const renderItem = (item) => (
+    <ListItem
+      key={item.id}
+      containerStyle={styles.itemContainer}
       onPress={() => navigation.navigate("DetalhesDeck", { deckId: item.id })}
     >
-      <Text style={styles.deckName}>{item.name}</Text>
-      <Text>Total de Cartas: {item.decks.length}</Text>
-      <Text>
-        Cartas Decoradas: {item.decks.filter((deck) => deck.isChecked).length}
-      </Text>
-      <Text>
-        Cartas Restantes: {item.decks.filter((deck) => !deck.isChecked).length}
-      </Text>
-    </TouchableOpacity>
+      <ListItem.Content>
+        <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>
+        <ListItem.Subtitle>Total de Cartas: {item.cards.length}</ListItem.Subtitle>
+        <ListItem.Subtitle>Cartas Decoradas: {item.cards.filter((deck) => deck.isChecked).length}</ListItem.Subtitle>
+        <ListItem.Subtitle>Cartas Restantes: {item.cards.filter((deck) => !deck.isChecked).length}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
   );
+
+  const decks = state?.decks ?? [];
+  console.log("Tamanho de state.decks:", decks.length);
+
+  // Verifica se há itens na lista
+  if (decks.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.debugText}>Nenhum item encontrado.</Text>
+        <Text style={styles.debugText}>Adicione itens à lista para visualizá-los.</Text>
+        {/* Item de exemplo para debugging */}
+        <ListItem containerStyle={styles.itemContainer}>
+          <ListItem.Content>
+            <ListItem.Title style={styles.deckName}>Exemplo de Item</ListItem.Title>
+            <ListItem.Subtitle>Total de Cartas: 0</ListItem.Subtitle>
+            <ListItem.Subtitle>Cartas Decoradas: 0</ListItem.Subtitle>
+            <ListItem.Subtitle>Cartas Restantes: 0</ListItem.Subtitle>
+          </ListItem.Content>
+        </ListItem>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={state.decks}
-        renderItem={({ item }) => {
-          // console.log("Item sendo renderizado:", item); // Debugging print
-          return (
-            <TouchableOpacity
-              style={styles.itemContainer}
-              onPress={() =>
-                navigation.navigate("DetalhesDeck", { deckId: item.id })
-              }
-            >
-              <Text style={styles.deckName}>{item.name}</Text>
-              <Text>Total de Cartas: {item.cards.length}</Text>
-              <Text>
-                Cartas Decoradas:{" "}
-                {item.cards.filter((deck) => deck.isChecked).length}
-              </Text>
-              <Text>
-                Cartas Restantes:{" "}
-                {item.cards.filter((deck) => !deck.isChecked).length}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-        keyExtractor={(item) => item.id.toString()}
-        onContentSizeChange={(contentWidth, contentHeight) => {
-          // console.log("Número total de itens:", state.decks.length); // Debugging print
-        }}
-      />
+      <Text style={styles.debugText}>Componente sendo renderizado...</Text>
+      {decks.map(renderItem)}
     </View>
   );
 };
@@ -75,7 +62,6 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     backgroundColor: "#b2bec3",
-    padding: 20,
     marginBottom: 10,
     borderRadius: 5,
   },
@@ -83,5 +69,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  debugText: {
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
