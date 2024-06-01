@@ -55,7 +55,7 @@ export default (props) => (
           options={({ navigation }) => {
             const { dispatch } = useContext(DecksContext);
             return {
-              title: "Card Browser",
+              title: "Perguntas",
             };
           }}
         />
