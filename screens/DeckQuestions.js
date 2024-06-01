@@ -11,6 +11,7 @@ const DeckQuestions = () => {
   const [deck, setDeck] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswerButtons, setShowAnswerButtons] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false); // Estado para mostrar a resposta
 
   useEffect(() => {
     const selectedDeck = state.decks.find((deck) => deck.id === deckId);
@@ -25,6 +26,7 @@ const DeckQuestions = () => {
     console.log(
       `Pergunta ${currentQuestionIndex} respondida com dificuldade: ${difficulty}`
     );
+    setShowAnswer(false); // Oculta a resposta quando uma nova pergunta é mostrada
     setShowAnswerButtons(false);
     if (currentQuestionIndex < deck.cards.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -84,6 +86,9 @@ const DeckQuestions = () => {
             <Text style={styles.answerButtonText}>Resposta</Text>
           </TouchableOpacity>
         )}
+        {showAnswer && ( // Mostra a resposta se showAnswer for verdadeiro
+          <Text style={styles.answerText}>{currentQuestion.answer}</Text>
+        )}
       </View>
     </View>
   );
@@ -109,6 +114,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     marginTop: 320,
+  },
+  answerText: {
+    fontSize: 20,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 20,
   },
   answerButtonsContainer: {
     flexDirection: "row",
