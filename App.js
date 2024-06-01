@@ -1,20 +1,4 @@
-// import React from 'react';
-// import { NavigationContainer } from "@react-navigation/native";
-// import { SafeAreaView } from 'react-native';
-// import Drawer from './Drawer/Drawer';
-
-// export default function App() {
-//   return (
-//     <SafeAreaView style = {{flex:1}}>
-//       <NavigationContainer>
-//         <Drawer></Drawer>
-//       </NavigationContainer>
-//     </SafeAreaView>
-//   );
-// }
-
-//TELA LOGIN
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -27,22 +11,33 @@ import {
 } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import users from "./users"; // Import the users list
+import users from "./User/users"; // Import the users list
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Drawer from "./Drawer/Drawer";
-import AddCard from "./screens/AddCard";
+import AddDeck from "./screens/AddDeck";
+import Cadastro from "./screens/Cadastro";
+import EventsContext, { EventsProvider } from "./User/UserContextFile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import RedefinirSenha from "./screens/RedefinirSenha";
 
 const Stack = createNativeStackNavigator();
 
 function TelaLogin() {
+  // AsyncStorage.clear();
+  // console.log("console limpado")
+  const { state, dispatch } = useContext(EventsContext);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const navigation = useNavigation();
-  // Function to handle sign-in
+  console.log(state.users.length);
+  // Function to handle sign-in]
+
+  console.log(state.users); // Print the users array to the console
+
   const handleSignIn = () => {
-    const user = users.find(
+    const user = state.users.find(
       (u) => u.email === form.email && u.senha === form.password
     );
     if (user) {
@@ -53,7 +48,7 @@ function TelaLogin() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#e8ecf4" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffeaa7" }}>
       <View style={styles.container}>
         <KeyboardAwareScrollView>
           <View style={styles.header}>
@@ -62,22 +57,22 @@ function TelaLogin() {
               resizeMode="contain"
               style={styles.headerImg}
               source={{
-                uri: "https://assets.withfra.me/SignIn.2.png",
+                uri: "https://cdn-icons-png.flaticon.com/128/889/889648.png",
               }}
             />
 
             <Text style={styles.title}>
-              Sign in to <Text style={{ color: "#075eec" }}>MyApp</Text>
+              <Text style={{ color: "#d63031" }}>nota</Text>AI!
             </Text>
 
             <Text style={styles.subtitle}>
-              Get access to your portfolio and more
+              O seu próprio aplicativo de flashcards
             </Text>
           </View>
 
           <View style={styles.form}>
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Email address</Text>
+              <Text style={styles.inputLabel}>Endereço de email</Text>
 
               <TextInput
                 autoCapitalize="none"
@@ -85,7 +80,7 @@ function TelaLogin() {
                 clearButtonMode="while-editing"
                 keyboardType="email-address"
                 onChangeText={(email) => setForm({ ...form, email })}
-                placeholder="john@example.com"
+                placeholder="maria@exemplo.com"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 value={form.email}
@@ -93,7 +88,7 @@ function TelaLogin() {
             </View>
 
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Password</Text>
+              <Text style={styles.inputLabel}>Senha</Text>
 
               <TextInput
                 autoCorrect={false}
@@ -110,24 +105,32 @@ function TelaLogin() {
             <View style={styles.formAction}>
               <TouchableOpacity onPress={handleSignIn}>
                 <View style={styles.btn}>
-                  <Text style={styles.btnText}>Sign in</Text>
+                  <Text style={styles.btnText}>Entrar</Text>
                 </View>
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.formLink}>Forgot password?</Text>
+            {/* <Text style={styles.formLink}>Esqueceu a senha?</Text> */}
+
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("RedefinirSenha");
+              }}
+            >
+              <Text style={styles.formLink}>Esqueceu a senha?</Text>
+            </TouchableOpacity>
           </View>
         </KeyboardAwareScrollView>
 
         <TouchableOpacity
           onPress={() => {
-            // handle link
+            navigation.navigate("Cadastro");
           }}
           style={{ marginTop: "auto" }}
         >
           <Text style={styles.formFooter}>
-            Don't have an account?{" "}
-            <Text style={{ textDecorationLine: "underline" }}>Sign up</Text>
+            Não possui uma conta?{" "}
+            <Text style={{ textDecorationLine: "underline" }}>Cadastre-se</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -137,34 +140,74 @@ function TelaLogin() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name=" " component={TelaLogin} />
+    <EventsProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={screenOptions}>
+          <Stack.Screen
+            name=" "
+            component={TelaLogin}
+            // options={{
+            //   headerShown: false,
+            // }}
+            options={({ navigation }) => {
+              useContext(EventsContext);
+              const { dispatch } = useContext(EventsContext);
+              return {
+                headerShown: false,
+              };
+            }}
+          />
 
-        <Stack.Screen
-          name="Drawer"
-          component={Drawer}
-          options={{
-            title: " ",
-            headerBackVisible: false,
-          }}
-        />
+          <Stack.Screen
+            name="Drawer"
+            component={Drawer}
+            options={{
+              title: " ",
+              headerBackVisible: false,
+              headerShown: false,
+            }}
+          />
 
-        <Stack.Screen
-          name="AddCard"
-          component={AddCard}
-          options={{
-            title: "Adicionar Carta",
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen
+            name="AddDeck"
+            component={AddDeck}
+            options={{
+              title: "Adicionar Carta",
+            }}
+          />
+
+          <Stack.Screen
+            name="Cadastro"
+            component={Cadastro}
+            options={({ navigation }) => {
+              useContext(EventsContext);
+              const { dispatch } = useContext(EventsContext);
+              return {
+                title: "Cadastrar Usuário",
+              };
+            }}
+          />
+
+          <Stack.Screen
+            name="RedefinirSenha"
+            component={RedefinirSenha}
+            options={({ navigation }) => {
+              useContext(EventsContext);
+              const { dispatch } = useContext(EventsContext);
+              return {
+                title: "Redefinir Senha",
+              };
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </EventsProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
+    paddingVertical: 90,
     paddingHorizontal: 0,
     flexGrow: 1,
     flexShrink: 1,
@@ -187,8 +230,8 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
     alignSelf: "center",
     marginBottom: 36,
   },
@@ -206,7 +249,7 @@ const styles = StyleSheet.create({
   formLink: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#075eec",
+    color: "#ff7675",
     textAlign: "center",
   },
   formFooter: {
@@ -245,8 +288,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,
-    backgroundColor: "#075eec",
-    borderColor: "#075eec",
+    backgroundColor: "#ff7675",
+    borderColor: "#ff7675",
   },
   btnText: {
     fontSize: 18,
@@ -255,3 +298,13 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+
+const screenOptions = {
+  headerStyle: {
+    backgroundColor: "#e17055",
+  },
+  headerTintColor: "#fff",
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+};

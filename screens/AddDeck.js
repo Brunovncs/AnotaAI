@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import { View, Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
-import { EventsContext } from "../Cards/CardContextFile";
+import { DecksContext } from "../Decks/DeckContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 
 export default () => {
-  const { state, dispatch } = useContext(EventsContext);
+  const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const [perguntaText, setPerguntaText] = useState('');
   const [respostaText, setRespostaText] = useState('');
@@ -13,6 +13,7 @@ export default () => {
   return (
     <View style={styles.container}>
       {/* Centered Text Input for Perguntas */}
+      <Text>Frente da carta: </Text>
       <TextInput
         style={[styles.input, {backgroundColor: 'white'}]} // White background for this input
         onChangeText={text => setPerguntaText(text)}
@@ -20,6 +21,7 @@ export default () => {
         placeholder="Digite suas perguntas aqui"
       />
       {/* Centered Text Input for Respostas */}
+      <Text>Atrás da carta: </Text>
       <TextInput
         style={[styles.input, {backgroundColor: 'white'}]} // White background for this input
         onChangeText={text => setRespostaText(text)}
@@ -37,7 +39,7 @@ export default () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#b2bec3",
+    backgroundColor: "#ffeaa7",
     //justifyContent: 'center', // Center items vertically
     alignItems: 'center', // Center items horizontally
   },
@@ -64,3 +66,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
