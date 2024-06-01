@@ -13,6 +13,7 @@ export default () => {
   return (
     <View style={styles.container}>
       {/* Centered Text Input for Perguntas */}
+      <Text>Frente da carta: </Text>
       <TextInput
         style={[styles.input, {backgroundColor: 'white'}]} // White background for this input
         onChangeText={text => setPerguntaText(text)}
@@ -20,6 +21,7 @@ export default () => {
         placeholder="Digite suas perguntas aqui"
       />
       {/* Centered Text Input for Respostas */}
+      <Text>Atrás da carta: </Text>
       <TextInput
         style={[styles.input, {backgroundColor: 'white'}]} // White background for this input
         onChangeText={text => setRespostaText(text)}
@@ -37,7 +39,7 @@ export default () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#b2bec3",
+    backgroundColor: "#ffeaa7",
     //justifyContent: 'center', // Center items vertically
     alignItems: 'center', // Center items horizontally
   },
@@ -64,3 +66,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

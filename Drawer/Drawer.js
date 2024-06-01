@@ -14,6 +14,7 @@ import Estatisticas from "../screens/Estatisticas";
 const Drawer = createDrawerNavigator();
 
 export default (props) => (
+  <>
   <DecksProvider>
     <Drawer.Navigator
       initialRouteName="Lista_de_Decks"
@@ -72,6 +73,7 @@ export default (props) => (
       {/* Outras telas Drawer aqui */}
     </Drawer.Navigator>
   </DecksProvider>
+  </>
 );
 
 const screenOptions = {

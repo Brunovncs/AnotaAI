@@ -1,20 +1,4 @@
-// import React from 'react';
-// import { NavigationContainer } from "@react-navigation/native";
-// import { SafeAreaView } from 'react-native';
-// import Drawer from './Drawer/Drawer';
-
-// export default function App() {
-//   return (
-//     <SafeAreaView style = {{flex:1}}>
-//       <NavigationContainer>
-//         <Drawer></Drawer>
-//       </NavigationContainer>
-//     </SafeAreaView>
-//   );
-// }
-
-//TELA LOGIN
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -27,22 +11,33 @@ import {
 } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import users from "./users"; // Import the users list
+import users from "./User/users"; // Import the users list
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Drawer from "./Drawer/Drawer";
 import AddDeck from "./screens/AddDeck";
+import Cadastro from "./screens/Cadastro";
+import EventsContext, { EventsProvider } from "./User/UserContextFile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import RedefinirSenha from "./screens/RedefinirSenha";
 
 const Stack = createNativeStackNavigator();
 
 function TelaLogin() {
+  // AsyncStorage.clear();
+  // console.log("console limpado")
+  const { state, dispatch } = useContext(EventsContext);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const navigation = useNavigation();
-  // Function to handle sign-in
+  console.log(state.users.length);
+  // Function to handle sign-in]
+
+  console.log(state.users); // Print the users array to the console
+
   const handleSignIn = () => {
-    const user = users.find(
+    const user = state.users.find(
       (u) => u.email === form.email && u.senha === form.password
     );
     if (user) {
@@ -67,7 +62,7 @@ function TelaLogin() {
             />
 
             <Text style={styles.title}>
-              A<Text style={{ color: "#d63031" }}>nota</Text>AI!
+              <Text style={{ color: "#d63031" }}>nota</Text>AI!
             </Text>
 
             <Text style={styles.subtitle}>
@@ -115,13 +110,21 @@ function TelaLogin() {
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.formLink}>Esqueceu a senha?</Text>
+            {/* <Text style={styles.formLink}>Esqueceu a senha?</Text> */}
+
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("RedefinirSenha");
+              }}
+            >
+              <Text style={styles.formLink}>Esqueceu a senha?</Text>
+            </TouchableOpacity>
           </View>
         </KeyboardAwareScrollView>
 
         <TouchableOpacity
           onPress={() => {
-            // handle link
+            navigation.navigate("Cadastro");
           }}
           style={{ marginTop: "auto" }}
         >
@@ -137,35 +140,68 @@ function TelaLogin() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-        name=" "
-        component={TelaLogin}
-        options={{
-          headerShown: false,
-        }}
-        />
+    <EventsProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={screenOptions}>
+          <Stack.Screen
+            name=" "
+            component={TelaLogin}
+            // options={{
+            //   headerShown: false,
+            // }}
+            options={({ navigation }) => {
+              useContext(EventsContext);
+              const { dispatch } = useContext(EventsContext);
+              return {
+                headerShown: false,
+              };
+            }}
+          />
 
-        <Stack.Screen
-          name="Drawer"
-          component={Drawer}
-          options={{
-            title: " ",
-            headerBackVisible: false,
-            headerShown: false,
-          }}
-        />
+          <Stack.Screen
+            name="Drawer"
+            component={Drawer}
+            options={{
+              title: " ",
+              headerBackVisible: false,
+              headerShown: false,
+            }}
+          />
 
-        <Stack.Screen
-          name="AddDeck"
-          component={AddDeck}
-          options={{
-            title: "Adicionar Carta",
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen
+            name="AddDeck"
+            component={AddDeck}
+            options={{
+              title: "Adicionar Carta",
+            }}
+          />
+
+          <Stack.Screen
+            name="Cadastro"
+            component={Cadastro}
+            options={({ navigation }) => {
+              useContext(EventsContext);
+              const { dispatch } = useContext(EventsContext);
+              return {
+                title: "Cadastrar Usuário",
+              };
+            }}
+          />
+
+          <Stack.Screen
+            name="RedefinirSenha"
+            component={RedefinirSenha}
+            options={({ navigation }) => {
+              useContext(EventsContext);
+              const { dispatch } = useContext(EventsContext);
+              return {
+                title: "Redefinir Senha",
+              };
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </EventsProvider>
   );
 }
 
@@ -262,3 +298,13 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+
+const screenOptions = {
+  headerStyle: {
+    backgroundColor: "#e17055",
+  },
+  headerTintColor: "#fff",
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+};
