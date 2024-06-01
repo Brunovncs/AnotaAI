@@ -1,35 +1,55 @@
 import React, { useContext, useState } from "react";
-import { View, Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
-import { DecksContext } from "../Decks/DeckContextFile";
+import {
+  View,
+  Alert,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import DecksContext from "../Decks/DeckContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 
-export default () => {
-  const { state, dispatch } = useContext(DecksContext);
-  const navigation = useNavigation();
-  const [perguntaText, setPerguntaText] = useState('');
-  const [respostaText, setRespostaText] = useState('');
+export default (route, navigation) => {
+  const [nomeDeck, SetNomeDeck] = useState({
+    name: "",
+    cards: [],
+  });
+
+  const {dispatch} = useContext(DecksContext);
 
   return (
     <View style={styles.container}>
       {/* Centered Text Input for Perguntas */}
-      <Text>Frente da carta: </Text>
+      <Text>Nome do Deck: </Text>
       <TextInput
-        style={[styles.input, {backgroundColor: 'white'}]} // White background for this input
-        onChangeText={text => setPerguntaText(text)}
-        value={perguntaText}
-        placeholder="Digite suas perguntas aqui"
-      />
-      {/* Centered Text Input for Respostas */}
-      <Text>Atrás da carta: </Text>
-      <TextInput
-        style={[styles.input, {backgroundColor: 'white'}]} // White background for this input
-        onChangeText={text => setRespostaText(text)}
-        value={respostaText}
-        placeholder="Digite suas respostas aqui"
+        style={[styles.input, { backgroundColor: "white" }]} // White background for this input
+        onChangeText={(name) => SetNomeDeck({ ...nomeDeck, name })}
+        value={nomeDeck.name}
+        placeholder="Digite o nome do deck"
       />
       {/* Centered Round Border Button */}
-      <TouchableOpacity onPress={() => alert('Texto adicionado')} style={styles.addButton}>
+      <TouchableOpacity
+        onPress={() => {
+          // Verifica se todos os campos foram preenchidos
+          if (nomeDeck.name) {
+            dispatch({
+              // Cria ou atualiza o evento
+              type: "addNewDeck",
+              payload: nomeDeck,
+            });
+            navigation.goBack();
+          } else {
+            Alert.alert(
+              "Campos Vazios",
+              "Por favor, preencha todos os campos."
+            );
+          }
+        }}
+        style={styles.addButton}
+      >
         <Text style={styles.addButtonText}>Adicionar</Text>
       </TouchableOpacity>
     </View>
@@ -41,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffeaa7",
     //justifyContent: 'center', // Center items vertically
-    alignItems: 'center', // Center items horizontally
+    alignItems: "center", // Center items horizontally
   },
   input: {
     height: 50, // Smaller size
@@ -49,21 +69,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5, // More rounded borders
     borderWidth: 1,
-    borderColor: '#ccc',
-    width: '80%', // Make the input take up less space
+    borderColor: "#ccc",
+    width: "80%", // Make the input take up less space
   },
   addButton: {
-    backgroundColor: '#219ebc',
+    backgroundColor: "#219ebc",
     padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 20, // More rounded corners
     width: 200, // Smaller size
     height: 40,
   },
   addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 });
-
