@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { ListItem } from "react-native-elements";
-import { DecksContext } from "../Decks/DeckContextFile";
+import DecksContext from "../Decks/DeckContextFile";
 import { useNavigation } from "@react-navigation/native";
 import EventsContext from "../User/UserContextFile";
 

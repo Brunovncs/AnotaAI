@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { DecksContext } from "../Decks/DeckContextFile";
+import DecksContext from "../Decks/DeckContextFile";
 
 const DeckQuestions = () => {
   const { state, dispatch } = useContext(DecksContext);

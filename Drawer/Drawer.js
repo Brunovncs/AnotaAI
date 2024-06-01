@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Button, Icon } from "@rneui/themed";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 import { Menu, Provider as PaperProvider } from "react-native-paper";
-import { DecksProvider, DecksContext } from "../Decks/DeckContextFile";
+import DecksContext, { DecksProvider } from "../Decks/DeckContextFile";
 
 import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
