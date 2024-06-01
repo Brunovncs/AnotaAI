@@ -18,7 +18,7 @@ export default () => { // Arquivo responsável por editar eventos específicos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#b2bec3", // Altere para a cor de fundo desejada
+    backgroundColor: "#ffeaa7", // Altere para a cor de fundo desejada
   },
   item: {
     backgroundColor: "#b2bec3", // cor de fundo padrão
