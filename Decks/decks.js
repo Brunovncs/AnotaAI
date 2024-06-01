@@ -1,4 +1,4 @@
-const decks = [
+export default decks = [
   {
     id: 1,
     name: "Matemática",
@@ -16,5 +16,3 @@ const decks = [
     ],
   },
 ];
-
-export default decks;

@@ -28,6 +28,7 @@ async function saveDecks(decks) {
 async function loadDecks() {
   try {
     const decks = await AsyncStorage.getItem("decks");
+    console.log("decks: ", decks);
     return { decks: decks ? JSON.parse(decks) : [] };
   } catch (error) {
     console.error("Erro ao carregar os decks do AsyncStorage", error);
@@ -47,14 +48,7 @@ export const DecksProvider = (props) => {
   useEffect(() => {
     async function fetchData() {
       const loadedDecks = await loadDecks();
-      if (loadedDecks.decks === null) {
-        // Se o AsyncStorage estiver vazio, inicialize com os decks do arquivo
-        await saveDecks(initialState.decks);
-        dispatch({ type: "loadDecksFromStorage", payload: { decks: initialState.decks } });
-      } else {
-        dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
-      }
-      console.log("Dispatch loadDecksFromStorage com payload: ", loadedDecks);
+      dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
     }
     fetchData();
   }, []);
