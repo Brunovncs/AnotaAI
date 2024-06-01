@@ -144,7 +144,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={screenOptions}>
           <Stack.Screen
-            name=" "
+            name="TelaLogin"
             component={TelaLogin}
             // options={{
             //   headerShown: false,

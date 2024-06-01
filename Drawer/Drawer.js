@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useContext, useState} from "react";
+import { StyleSheet, View, Alert} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Icon } from "@rneui/themed";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
-
+import { Menu, Provider as PaperProvider } from 'react-native-paper';
 import { DecksProvider, DecksContext } from "../Decks/DeckContextFile";
 
 import AddDeck from "../screens/AddDeck";
@@ -14,35 +14,41 @@ import Estatisticas from "../screens/Estatisticas";
 const Drawer = createDrawerNavigator();
 
 export default (props) => (
-  <>
+  <PaperProvider>
   <DecksProvider>
     <Drawer.Navigator
       initialRouteName="Lista_de_Decks"
       screenOptions={screenOptions}
     >
-      <Drawer.Screen // Tela de Login
+      <Drawer.Screen 
         name="Lista_de_Decks"
         component={DeckList}
+        // options={({ navigation }) => {
+        //   const { dispatch } = useContext(DecksContext);
+        //   return {
+        //     title: "Decks",
+        //     headerRight: () =>         
+        //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        //     <Button
+        //       onPress={() => props.navigation.navigate("AddDeck")}
+        //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
+        //       icon={<Icon name="add" size={25} color="white" />}
+        //     />
+        //     <Button
+        //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
+        //       icon={<Icon name="more-vert" size={25} color="white" />}
+        //     />
+        //   </View>,
+        //   };
+        // }}
         options={({ navigation }) => {
-          const { dispatch } = useContext(DecksContext);
           return {
             title: "Decks",
-            headerRight: () =>         
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Button
-              onPress={() => props.navigation.navigate("AddDeck")}
-              type="clear" // pode ser solid ou outline, nesse caso é sem fundo
-              icon={<Icon name="add" size={25} color="white" />}
-            />
-            <Button
-              type="clear" // pode ser solid ou outline, nesse caso é sem fundo
-              icon={<Icon name="more-vert" size={25} color="white" />}
-            />
-          </View>,
+            headerRight: () => <HeaderMenu navigation={navigation} />,
           };
         }}
       />
-        <Drawer.Screen // Tela de Login
+        <Drawer.Screen 
         name="BrowserScreen"
         component={CardBrowser}
         options={({ navigation }) => {
@@ -52,7 +58,7 @@ export default (props) => (
           };
         }}
       />
-        <Drawer.Screen // Tela de Login
+        <Drawer.Screen 
         name="Estatísticas"
         component={Estatisticas}
         options={({ navigation }) => {
@@ -73,8 +79,55 @@ export default (props) => (
       {/* Outras telas Drawer aqui */}
     </Drawer.Navigator>
   </DecksProvider>
-  </>
+  </PaperProvider>
 );
+
+const HeaderMenu = ({ navigation }) => {
+  const [visible, setVisible] = useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+      <Button
+        onPress={() => navigation.navigate("AddDeck")}
+        type="clear"
+        icon={<Icon name="add" size={25} color="white" />}
+      />
+      <View>
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        anchor={
+          <Button
+            type="clear"
+            icon={<Icon name="more-vert" size={25} color="white" />}
+            onPress={openMenu}
+          />
+        }
+      >
+        <Menu.Item
+          onPress={() => {
+            closeMenu();
+            Alert.alert("Logout", "Deseja realmente sair?", [
+              {
+                text: "Cancelar",
+                style: "cancel",
+              },
+              {
+                text: "Sim",
+                onPress: () => navigation.navigate("TelaLogin"),
+              },
+            ]);
+          }}
+          title="Logout"
+          style={{ marginTop: 20 }}
+        />
+      </Menu>
+      </View>
+    </View>
+  );
+};
 
 const screenOptions = {
   headerStyle: {
