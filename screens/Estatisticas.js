@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, Alert, FlatList, StyleSheet } from "react-native";
-import { DecksContext } from "../Decks/DeckContextFile";
+import DecksContext from "../Decks/DeckContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native"; // Import the hook
 

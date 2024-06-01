@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useEffect, useReducer} from "react";
 import decks from "./decks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -15,23 +15,49 @@ const actions = {
   },
   updateDeck(state, action) {
     const updated = action.payload;
-    const updatedDecks = state.events.map((u) =>
+    const updatedDecks = state.decks.map((u) =>
       u.id === updated.id ? updated : u
     );
     saveDecks(updatedDecks);
     return {
       ...state,
-      events: updatedDecks,
+      decks: updatedDecks,
     };
   },
-  addNewDeck(newDeck) {
-    const newDecksArray = [...state.decks, newDeck];
-    saveDecks(newDecksArray);
+  // addNewDeck(newDeck) {
+  //   const newDecksArray = [...state.decks, newDeck];
+  //   saveDecks(newDecksArray);
+  //   return {
+  //    ...state,
+  //     decks: newDecksArray,
+  //   };
+  // },
+  addNewDeck(state, action) {
+    const evento = action.payload;
+    //define um id aleatório como id
+    evento.id = Math.random();
+    const updatedEvents = [...state.decks, evento];
+    saveDecks(updatedEvents);
+    console.log("salvo deck!");
     return {
-     ...state,
-      decks: newDecksArray,
+      ...state,
+      decks: updatedEvents,
     };
-  }  
+  },
+  carregarEvents(state, action) {
+    const loadedEvents = action.payload.decks;
+    return {
+      ...state,
+      decks: loadedEvents,
+    };
+  },
+  gerarRandom(state, action) {
+    const loadedEvents = action.payload;
+    return {
+      ...state,
+      decks: loadedEvents,
+    };
+  },
 };
 
 async function saveDecks(decks) {
@@ -51,24 +77,31 @@ async function loadDecks() {
     return { decks: [] };
   }
 }
-
 export const DecksProvider = (props) => {
-  function reducer(state, action) {
-    const fn = actions[action.type];
-    return fn ? fn(state, action) : state;
-  }
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-
   useEffect(() => {
     async function fetchData() {
-      saveDecks(decks); // provisório, salvar decks
+      //carrega os users do AsyncStorage utilizando a função loadDecks
+
       const loadedDecks = await loadDecks();
-      dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
+      if (loadedDecks.decks.length !== 0) {
+      //se existirem users carregados, despacha uma ação para carregar os users no estado
+        dispatch({ type: "carregarDecks", payload: loadedDecks });
+      } else {        
+        //se não, despacha uma ação para gerar users aleatórios
+        dispatch({ type: "gerarRandom", payload: decks });
+      }
     }
     fetchData();
   }, []);
 
+  function reducer(state, action) {
+    //obtém a função correspondente à ação do actions
+    const fn = actions[action.type];
+    //executa a função correspondente se existir, senão retorna o estado atual
+    return fn ? fn(state, action) : state;
+  }
+
+  const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <DecksContext.Provider value={{ state, dispatch }}>
       {props.children}
@@ -76,4 +109,4 @@ export const DecksProvider = (props) => {
   );
 };
 
-export { DecksContext };
+export default DecksContext;
