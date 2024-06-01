@@ -36,6 +36,7 @@ const DeckQuestions = () => {
   };
 
   const handleShowAnswerButtons = () => {
+    setShowAnswer(true);
     setShowAnswerButtons(true);
   };
 
@@ -57,6 +58,9 @@ const DeckQuestions = () => {
     <View style={styles.container}>
       <View style={styles.questionContainer}>
         <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        {showAnswer && ( // Mostra a resposta se showAnswer for verdadeiro
+          <Text style={styles.answerText}>{currentQuestion.answer}</Text>
+        )}
         {showAnswerButtons ? (
           <View style={styles.answerButtonsContainer}>
             <TouchableOpacity
@@ -85,9 +89,6 @@ const DeckQuestions = () => {
           >
             <Text style={styles.answerButtonText}>Resposta</Text>
           </TouchableOpacity>
-        )}
-        {showAnswer && ( // Mostra a resposta se showAnswer for verdadeiro
-          <Text style={styles.answerText}>{currentQuestion.answer}</Text>
         )}
       </View>
     </View>
