@@ -1,84 +1,96 @@
-import React, { useContext, useState} from "react";
-import { StyleSheet, View, Alert} from "react-native";
+import React, { useContext, useState } from "react";
+import { StyleSheet, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Icon } from "@rneui/themed";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
-import { Menu, Provider as PaperProvider } from 'react-native-paper';
+import { Menu, Provider as PaperProvider } from "react-native-paper";
 import { DecksProvider, DecksContext } from "../Decks/DeckContextFile";
 
 import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
 import CardBrowser from "../screens/CardBrowser";
+import DeckQuestions from "../screens/DeckQuestions";
 import Estatisticas from "../screens/Estatisticas";
 
 const Drawer = createDrawerNavigator();
 
 export default (props) => (
   <PaperProvider>
-  <DecksProvider>
-    <Drawer.Navigator
-      initialRouteName="Lista_de_Decks"
-      screenOptions={screenOptions}
-    >
-      <Drawer.Screen 
-        name="Lista_de_Decks"
-        component={DeckList}
-        // options={({ navigation }) => {
-        //   const { dispatch } = useContext(DecksContext);
-        //   return {
-        //     title: "Decks",
-        //     headerRight: () =>         
-        //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        //     <Button
-        //       onPress={() => props.navigation.navigate("AddDeck")}
-        //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
-        //       icon={<Icon name="add" size={25} color="white" />}
-        //     />
-        //     <Button
-        //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
-        //       icon={<Icon name="more-vert" size={25} color="white" />}
-        //     />
-        //   </View>,
-        //   };
-        // }}
-        options={({ navigation }) => {
-          return {
-            title: "Decks",
-            headerRight: () => <HeaderMenu navigation={navigation} />,
-          };
-        }}
-      />
-        <Drawer.Screen 
-        name="BrowserScreen"
-        component={CardBrowser}
-        options={({ navigation }) => {
-          const { dispatch } = useContext(DecksContext);
-          return {
-            title: "Card Browser",
-          };
-        }}
-      />
-        <Drawer.Screen 
-        name="Estatísticas"
-        component={Estatisticas}
-        options={({ navigation }) => {
-          const { dispatch } = useContext(DecksContext);
-          return {
-            title: "Estatísticas",
-          };
-        }}
-      />
+    <DecksProvider>
+      <Drawer.Navigator
+        initialRouteName="Lista_de_Decks"
+        screenOptions={screenOptions}
+      >
+        <Drawer.Screen
+          name="Lista_de_Decks"
+          component={DeckList}
+          // options={({ navigation }) => {
+          //   const { dispatch } = useContext(DecksContext);
+          //   return {
+          //     title: "Decks",
+          //     headerRight: () =>
+          //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          //     <Button
+          //       onPress={() => props.navigation.navigate("AddDeck")}
+          //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
+          //       icon={<Icon name="add" size={25} color="white" />}
+          //     />
+          //     <Button
+          //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
+          //       icon={<Icon name="more-vert" size={25} color="white" />}
+          //     />
+          //   </View>,
+          //   };
+          // }}
+          options={({ navigation }) => {
+            return {
+              title: "Decks",
+              headerRight: () => <HeaderMenu navigation={navigation} />,
+            };
+          }}
+        />
+        <Drawer.Screen
+          name="CardBrowser"
+          component={CardBrowser}
+          options={({ navigation }) => {
+            const { dispatch } = useContext(DecksContext);
+            return {
+              title: "Card Browser",
+            };
+          }}
+        />
+        <Drawer.Screen
+          name="DeckQuestions"
+          component={DeckQuestions}
+          options={({ navigation }) => {
+            const { dispatch } = useContext(DecksContext);
+            return {
+              drawerItemStyle: { display: "none" },
+              title: "AnotaAI",
+            };
+          }}
+        />
+        <Drawer.Screen
+          name="Estatísticas"
+          component={Estatisticas}
+          options={({ navigation }) => {
+            const { dispatch } = useContext(DecksContext);
+            return {
+              title: "Estatísticas",
+            };
+          }}
+        />
 
-      {/* <Drawer.Screen // Tela de decks
+        {/* <Drawer.Screen // Tela de decks
 
         />
         <Drawer.Screen // ...
 
         /> */}
 
-      {/* Outras telas Drawer aqui */}
-    </Drawer.Navigator>
-  </DecksProvider>
+        {/* Outras telas Drawer aqui */}
+      </Drawer.Navigator>
+    </DecksProvider>
   </PaperProvider>
 );
 
@@ -88,42 +100,42 @@ const HeaderMenu = ({ navigation }) => {
   const closeMenu = () => setVisible(false);
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
       <Button
         onPress={() => navigation.navigate("AddDeck")}
         type="clear"
         icon={<Icon name="add" size={25} color="white" />}
       />
       <View>
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={
-          <Button
-            type="clear"
-            icon={<Icon name="more-vert" size={25} color="white" />}
-            onPress={openMenu}
+        <Menu
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={
+            <Button
+              type="clear"
+              icon={<Icon name="more-vert" size={25} color="white" />}
+              onPress={openMenu}
+            />
+          }
+        >
+          <Menu.Item
+            onPress={() => {
+              closeMenu();
+              Alert.alert("Logout", "Deseja realmente sair?", [
+                {
+                  text: "Cancelar",
+                  style: "cancel",
+                },
+                {
+                  text: "Sim",
+                  onPress: () => navigation.navigate("TelaLogin"),
+                },
+              ]);
+            }}
+            title="Logout"
+            style={{ marginTop: 20 }}
           />
-        }
-      >
-        <Menu.Item
-          onPress={() => {
-            closeMenu();
-            Alert.alert("Logout", "Deseja realmente sair?", [
-              {
-                text: "Cancelar",
-                style: "cancel",
-              },
-              {
-                text: "Sim",
-                onPress: () => navigation.navigate("TelaLogin"),
-              },
-            ]);
-          }}
-          title="Logout"
-          style={{ marginTop: 20 }}
-        />
-      </Menu>
+        </Menu>
       </View>
     </View>
   );

@@ -17,7 +17,7 @@ export default (props) => {
     <ListItem
       key={item.id}
       containerStyle={styles.itemContainer}
-      onPress={() => navigation.navigate("DetalhesDeck", { deckId: item.id })}
+      onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
     >
       <ListItem.Content>
         <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>

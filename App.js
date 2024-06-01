@@ -62,7 +62,7 @@ function TelaLogin() {
             />
 
             <Text style={styles.title}>
-              <Text style={{ color: "#d63031" }}>nota</Text>AI!
+              A<Text style={{ color: "#d63031" }}>nota</Text>AI!
             </Text>
 
             <Text style={styles.subtitle}>
