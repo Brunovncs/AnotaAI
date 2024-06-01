@@ -59,14 +59,25 @@ export default (props) => (
             };
           }}
         />
+
         <Drawer.Screen
           name="DeckQuestions"
           component={DeckQuestions}
           options={({ navigation }) => {
             const { dispatch } = useContext(DecksContext);
             return {
-              drawerItemStyle: { display: "none" },
               title: "AnotaAI",
+              drawerItemStyle: { display: "none" },
+              headerLeft: () => {
+                const navigation = useNavigation(); // Use useNavigation hook here
+                return (
+                  <Button
+                    onPress={() => navigation.navigate("Lista_de_Decks")}
+                    type="clear"
+                    icon={<Icon name="arrow-left" size={25} color="white" />}
+                  />
+                );
+              },
             };
           }}
         />
