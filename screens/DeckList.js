@@ -4,9 +4,11 @@ import { ListItem } from "react-native-elements";
 import { DecksContext } from "../Decks/DeckContextFile";
 import { useNavigation } from "@react-navigation/native";
 
-export default () => {
+export default (props) => {
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
+
+  console.log(state.decks.length);
 
   const renderItem = (item) => (
     console.log("state.decks: ", state.decks),

@@ -1,12 +1,13 @@
 import React, { createContext, useEffect, useReducer } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import decks from "./decks";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DecksContext = createContext({});
 const initialState = { decks };
 
 const actions = {
   loadDecksFromStorage(state, action) {
+    
     const loadedDecks = action.payload.decks;
     return {
       ...state,
@@ -23,8 +24,6 @@ async function saveDecks(decks) {
     console.error("Erro ao salvar os decks no AsyncStorage: ", error);
   }
 }
-
-
 async function loadDecks() {
   try {
     const decks = await AsyncStorage.getItem("decks");
@@ -35,7 +34,6 @@ async function loadDecks() {
     return { decks: [] };
   }
 }
-
 
 export const DecksProvider = (props) => {
   function reducer(state, action) {
