@@ -11,7 +11,7 @@ export default (props) => {
   console.log(state.decks.length);
 
   const renderItem = (item) => (
-    console.log("state.decks: ", state.decks),
+    // dispatch({type: "updateDeck", payload: decks}),
     <ListItem
       key={item.id}
       containerStyle={styles.itemContainer}

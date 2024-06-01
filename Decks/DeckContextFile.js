@@ -7,13 +7,31 @@ const initialState = { decks };
 
 const actions = {
   loadDecksFromStorage(state, action) {
-    
     const loadedDecks = action.payload.decks;
     return {
       ...state,
       decks: loadedDecks,
     };
   },
+  updateDeck(state, action) {
+    const updated = action.payload;
+    const updatedDecks = state.events.map((u) =>
+      u.id === updated.id ? updated : u
+    );
+    saveDecks(updatedDecks);
+    return {
+      ...state,
+      events: updatedDecks,
+    };
+  },
+  addNewDeck(newDeck) {
+    const newDecksArray = [...state.decks, newDeck];
+    saveDecks(newDecksArray);
+    return {
+     ...state,
+      decks: newDecksArray,
+    };
+  }  
 };
 
 async function saveDecks(decks) {
@@ -27,7 +45,6 @@ async function saveDecks(decks) {
 async function loadDecks() {
   try {
     const decks = await AsyncStorage.getItem("decks");
-    console.log("decks: ", decks);
     return { decks: decks ? JSON.parse(decks) : [] };
   } catch (error) {
     console.error("Erro ao carregar os decks do AsyncStorage", error);
@@ -45,6 +62,7 @@ export const DecksProvider = (props) => {
 
   useEffect(() => {
     async function fetchData() {
+      saveDecks(decks); // provisório, salvar decks
       const loadedDecks = await loadDecks();
       dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
     }
