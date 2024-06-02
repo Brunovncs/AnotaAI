@@ -12,6 +12,8 @@ const DeckQuestions = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswerButtons, setShowAnswerButtons] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false); // Estado para mostrar a resposta
+  const [allAnswered, setallAnswered] = useState(false);
+  const [showQuestion, setShowQuestion] = useState(true);
 
   useEffect(() => {
     const selectedDeck = state.decks.find((deck) => deck.id === deckId);
@@ -20,6 +22,7 @@ const DeckQuestions = () => {
 
   useEffect(() => {
     setCurrentQuestionIndex(0); // Reset currentQuestionIndex when deckId changes
+    setShowAnswer(false); // Reset showAnswer when deckId changes
   }, [deckId]);
 
   const handleAnswer = (difficulty) => {
@@ -31,6 +34,10 @@ const DeckQuestions = () => {
     if (currentQuestionIndex < deck.cards.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
+      setallAnswered(true);
+      setShowQuestion(false);
+      setShowAnswer(false);
+      setShowAnswerButtons(false);
       console.log("Todas as perguntas foram respondidas");
     }
   };
@@ -57,11 +64,13 @@ const DeckQuestions = () => {
   return (
     <View style={styles.container}>
       <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        {showQuestion && (
+          <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        )}
         {showAnswer && ( // Mostra a resposta se showAnswer for verdadeiro
           <Text style={styles.answerText}>{currentQuestion.answer}</Text>
         )}
-        {showAnswerButtons ? (
+        {showAnswerButtons && (
           <View style={styles.answerButtonsContainer}>
             <TouchableOpacity
               style={styles.answerButton}
@@ -82,13 +91,19 @@ const DeckQuestions = () => {
               <Text style={styles.answerButtonText}>Difícil</Text>
             </TouchableOpacity>
           </View>
-        ) : (
+        )}
+        {!allAnswered && !showAnswerButtons && ( 
           <TouchableOpacity
             style={[styles.answerButton, styles.singleAnswerButton]}
             onPress={handleShowAnswerButtons}
           >
             <Text style={styles.answerButtonText}>Resposta</Text>
           </TouchableOpacity>
+        )}
+        {allAnswered && (
+          <Text style={styles.answerText}>
+            Parabéns, você finalizou seu deck por hoje!
+          </Text>
         )}
       </View>
     </View>
