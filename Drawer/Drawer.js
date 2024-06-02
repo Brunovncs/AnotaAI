@@ -67,7 +67,7 @@ export default (props) => (
           name="DeckQuestions"
           component={DeckQuestions}
           options={({ navigation }) => {
-            const { dispatch } = useContext(TestsContext);
+            const { dispatch } = useContext(DecksContext);
             return {
               title: "AnotaAI",
               drawerItemStyle: { display: "none" },

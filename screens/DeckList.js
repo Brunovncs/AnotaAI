@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ListItem } from "react-native-elements";
 import DecksContext from "../Decks/DeckContextFile";
 import { useNavigation } from "@react-navigation/native";
@@ -7,25 +7,47 @@ import EventsContext from "../User/UserContextFile";
 import TestsContext from "../Decks/TestContextFile";
 
 export default (props) => {
-  const { state, dispatch } = useContext(TestsContext);
+  const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
 
   console.log("DECKS: "+state.decks);
 
-  const renderItem = (item) => (
-    <ListItem
-      key={item.id}
-      containerStyle={styles.itemContainer}
-      onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
-    >
-      <ListItem.Content>
-        <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>
-        <ListItem.Subtitle style={styles.subtitle}>Total de Cartas: {item.cards.length}</ListItem.Subtitle>
-        <ListItem.Subtitle style={styles.subtitle}>Cartas Decoradas: {item.cards.filter((deck) => deck.isChecked).length}</ListItem.Subtitle>
-        <ListItem.Subtitle style={styles.subtitle}>Cartas Restantes: {item.cards.filter((deck) => !deck.isChecked).length}</ListItem.Subtitle>
-      </ListItem.Content>
-    </ListItem>
-  );
+  const resetDeckProgress = (deckId) => {
+    dispatch({
+      type: "updateDeckProgress",
+      payload: {
+        deckId,
+        progress: { currentQuestionIndex: 0 },
+      },
+    });
+  };
+
+  const renderItem = (item) => {
+    const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
+    const cardsDecoradas = progress.currentQuestionIndex;
+    const cardsRestantes = item.cards.length - cardsDecoradas;
+
+    return (
+      <ListItem
+        key={item.id}
+        containerStyle={styles.itemContainer}
+        onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
+      >
+        <ListItem.Content>
+          <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>
+          <ListItem.Subtitle style={styles.subtitle}>Total de Cartas: {item.cards.length}</ListItem.Subtitle>
+          <ListItem.Subtitle style={styles.subtitle}>Cartas Decoradas: {cardsDecoradas}</ListItem.Subtitle>
+          <ListItem.Subtitle style={styles.subtitle}>Cartas Restantes: {cardsRestantes}</ListItem.Subtitle>
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={() => resetDeckProgress(item.id)}
+          >
+            <Text style={styles.resetButtonText}>Resetar Progresso</Text>
+          </TouchableOpacity>
+        </ListItem.Content>
+      </ListItem>
+    );
+  };
 
   if (state.decks.length === 0) {
     return (
@@ -71,6 +93,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: "#fff",  // Define a cor do texto como branca
+  },
+  resetButton: {
+    backgroundColor: "transparent",
+    alignSelf: "flex-end",
+  },
+  resetButtonText: {
+    color: "#ffeaa7",
+    fontWeight: "bold",
   },
   debugText: {
     fontSize: 16,

@@ -12,34 +12,58 @@ const DeckQuestions = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswerButtons, setShowAnswerButtons] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false); // Estado para mostrar a resposta
-  const [allAnswered, setallAnswered] = useState(false);
+  const [allAnswered, setAllAnswered] = useState(false);
   const [showQuestion, setShowQuestion] = useState(true);
 
   useEffect(() => {
     const selectedDeck = state.decks.find((deck) => deck.id === deckId);
     setDeck(selectedDeck);
-  }, [state.decks, deckId]);
+    const deckProgress = state.progress[deckId] || { currentQuestionIndex: 0 };
+    setCurrentQuestionIndex(deckProgress.currentQuestionIndex);
+    if (deckProgress.currentQuestionIndex <= selectedDeck.cards.length - 1) {
+      console.log("entrou no if: deckProgress.currentquestionindex: ", deckProgress.currentQuestionIndex)
+      console.log("entrou no if: selectedDeck.cards.length: ", selectedDeck.cards.length)
 
-  useEffect(() => {
-    setCurrentQuestionIndex(0); // Reset currentQuestionIndex when deckId changes
-    setShowAnswer(false); // Reset showAnswer when deckId changes
-  }, [deckId]);
+      setShowQuestion(true);
+      setAllAnswered(false);
+    } else {
+      setShowQuestion(false);
+      setAllAnswered(true);
+    }
+    setShowAnswer(false);
+    setShowAnswerButtons(false);
+  }, [state.decks, deckId, state.progress]);
+
+  // useEffect(() => {
+  //   console.log("foi pra ca sem querer")
+  //   setShowAnswer(false);
+  //   setShowAnswerButtons(true);
+  //   setallAnswered(false);
+  //   setShowQuestion(true);
+  // }, [deckId]);
 
   const handleAnswer = (difficulty) => {
-    console.log(
-      `Pergunta ${currentQuestionIndex} respondida com dificuldade: ${difficulty}`
-    );
-    setShowAnswer(false); // Oculta a resposta quando uma nova pergunta é mostrada
+    setShowAnswer(false);
     setShowAnswerButtons(false);
     if (currentQuestionIndex < deck.cards.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      const newIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(newIndex);
+      updateDeckProgress(newIndex);
     } else {
-      setallAnswered(true);
+      setAllAnswered(true);
       setShowQuestion(false);
-      setShowAnswer(false);
-      setShowAnswerButtons(false);
-      console.log("Todas as perguntas foram respondidas");
+      updateDeckProgress(deck.cards.length);
     }
+  };
+
+  const updateDeckProgress = (newIndex) => {
+    dispatch({
+      type: "updateDeckProgress",
+      payload: {
+        deckId,
+        progress: { currentQuestionIndex: newIndex },
+      },
+    });
   };
 
   const handleShowAnswerButtons = () => {
@@ -58,17 +82,25 @@ const DeckQuestions = () => {
       </View>
     );
   }
-
+  
   const currentQuestion = deck.cards[currentQuestionIndex];
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.questionContainer}>
         {showQuestion && (
           <Text style={styles.questionText}>{currentQuestion.question}</Text>
         )}
-        {showAnswer && ( // Mostra a resposta se showAnswer for verdadeiro
+        {showAnswer && (
           <Text style={styles.answerText}>{currentQuestion.answer}</Text>
+        )}
+        {!allAnswered && !showAnswerButtons && (
+          <TouchableOpacity
+            style={[styles.answerButton, styles.singleAnswerButton]}
+            onPress={handleShowAnswerButtons}
+          >
+            <Text style={styles.answerButtonText}>Resposta</Text>
+          </TouchableOpacity>
         )}
         {showAnswerButtons && (
           <View style={styles.answerButtonsContainer}>
@@ -91,14 +123,6 @@ const DeckQuestions = () => {
               <Text style={styles.answerButtonText}>Difícil</Text>
             </TouchableOpacity>
           </View>
-        )}
-        {!allAnswered && !showAnswerButtons && ( 
-          <TouchableOpacity
-            style={[styles.answerButton, styles.singleAnswerButton]}
-            onPress={handleShowAnswerButtons}
-          >
-            <Text style={styles.answerButtonText}>Resposta</Text>
-          </TouchableOpacity>
         )}
         {allAnswered && (
           <Text style={styles.answerText}>

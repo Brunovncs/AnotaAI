@@ -3,7 +3,7 @@ import decks from "./decks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DecksContext = createContext({});
-const initialState = { decks };
+const initialState = { decks, progress: {} };
 
 const actions = {
   loadDecksFromStorage(state, action) {
@@ -35,20 +35,39 @@ const actions = {
       decks: newDecksArray,
     };
   },
-  carregarEvents(state, action) {
-    const loadedEvents = action.payload.decks;
+  updateDeckProgress(state, action) {
+    const { deckId, progress } = action.payload;
+    const updatedProgress = {
+      ...state.progress,
+      [deckId]: progress,
+    };
+    saveProgress(updatedProgress);
     return {
       ...state,
-      decks: loadedEvents,
+      progress: updatedProgress,
     };
   },
-  gerarRandom(state, action) {
-    const loadedEvents = action.payload;
+  loadDeckProgress(state, action) {
+    const loadedProgress = action.payload.progress;
     return {
       ...state,
-      decks: loadedEvents,
+      progress: loadedProgress,
     };
-  }  
+  },
+  // carregarEvents(state, action) {
+  //   const loadedEvents = action.payload.decks;
+  //   return {
+  //     ...state,
+  //     decks: loadedEvents,
+  //   };
+  // },
+  // gerarRandom(state, action) {
+  //   const loadedEvents = action.payload;
+  //   return {
+  //     ...state,
+  //     decks: loadedEvents,
+  //   };
+  // }  
 };
 
 async function saveDecks(decks) {
@@ -69,43 +88,42 @@ async function loadDecks() {
   }
 }
 
-// export const DecksProvider = (props) => {
-//   function reducer(state, action) {
-//     const fn = actions[action.type];
-//     return fn ? fn(state, action) : state;
-//   }
+async function saveProgress(progress) {
+  try {
+    console.log("Salvando progresso no AsyncStorage: ", progress);
+    await AsyncStorage.setItem("progress", JSON.stringify(progress));
+  } catch (error) {
+    console.error("Erro ao salvar o progresso no AsyncStorage: ", error);
+  }
+}
 
-//   const [state, dispatch] = useReducer(reducer, initialState);
 
-//   useEffect(() => {
-//     async function fetchData() {
-//       saveDecks(decks); // provisório, salvar decks
-//       const loadedDecks = await loadDecks();
-//       dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
-//     }
-//     fetchData();
-//   }, []);
-
-//   return (
-//     <DecksContext.Provider value={{ state, dispatch }}>
-//       {props.children}
-//     </DecksContext.Provider>
-//   );
-// };
+async function loadProgress() {
+  try {
+    const progress = await AsyncStorage.getItem("progress");
+    return { progress: progress ? JSON.parse(progress) : {} };
+  } catch (error) {
+    console.error("Erro ao carregar o progresso do AsyncStorage", error);
+    return { progress: {} };
+  }
+}
 
 export const DecksProvider = (props) => {
   useEffect(() => {
     async function fetchData() {
       //carrega os decks do AsyncStorage utilizando a função loadDecks
-
+      await saveDecks(decks)
       const loadedDecks = await loadDecks();
-      if (loadedDecks.decks.length !== 0) {
-      //se existirem decks carregados, despacha uma ação para carregar os decks no estado
-        dispatch({ type: "carregarDecks", payload: loadedDecks });
-      } else {        
-        //se não, despacha uma ação para gerar decks aleatórios
-        dispatch({ type: "gerarRandom", payload: decks });
-      }
+      const loadedProgress = await loadProgress();
+      dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
+      dispatch({ type: "loadDeckProgress", payload: loadedProgress });
+      // if (loadedDecks.decks.length !== 0) {
+      // //se existirem decks carregados, despacha uma ação para carregar os decks no estado
+      //   dispatch({ type: "carregarDecks", payload: loadedDecks });
+      // } else {        
+      //   //se não, despacha uma ação para gerar decks aleatórios
+      //   dispatch({ type: "gerarRandom", payload: decks });
+      // }
     }
     fetchData();
   }, []);
