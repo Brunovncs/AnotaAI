@@ -5,6 +5,7 @@ import { Button, Icon } from "@rneui/themed";
 import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
 import { Menu, Provider as PaperProvider } from "react-native-paper";
 import DecksContext, { DecksProvider } from "../Decks/DeckContextFile";
+import TestsContext, {TestsProvider} from "../Decks/TestContextFile";
 
 import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
@@ -43,6 +44,8 @@ export default (props) => (
           //   };
           // }}
           options={({ navigation }) => {
+            useContext(TestsContext);
+            const { dispatch } = useContext(TestsContext);
             return {
               title: "Decks",
               headerRight: () => <HeaderMenu navigation={navigation} />,
@@ -53,7 +56,7 @@ export default (props) => (
           name="CardBrowser"
           component={CardBrowser}
           options={({ navigation }) => {
-            const { dispatch } = useContext(DecksContext);
+            const { dispatch } = useContext(TestsContext);
             return {
               title: "Perguntas",
             };
@@ -64,7 +67,7 @@ export default (props) => (
           name="DeckQuestions"
           component={DeckQuestions}
           options={({ navigation }) => {
-            const { dispatch } = useContext(DecksContext);
+            const { dispatch } = useContext(TestsContext);
             return {
               title: "AnotaAI",
               drawerItemStyle: { display: "none" },

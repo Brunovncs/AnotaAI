@@ -9,16 +9,18 @@ import {
   Text,
 } from "react-native";
 import DecksContext from "../Decks/DeckContextFile";
+import TestsContext from "../Decks/TestContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 
-export default (route, navigation) => {
+export default () => {
+  const navigation = useNavigation();
   const [nomeDeck, SetNomeDeck] = useState({
     name: "",
     cards: [],
   });
 
-  const {dispatch} = useContext(DecksContext);
+  const {dispatch} = useContext(TestsContext);
 
   return (
     <View style={styles.container}>
@@ -37,7 +39,7 @@ export default (route, navigation) => {
           if (nomeDeck.name) {
             dispatch({
               // Cria ou atualiza o evento
-              type: "addNewDeck",
+              type: "createEvent",
               payload: nomeDeck,
             });
             navigation.goBack();
