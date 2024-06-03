@@ -93,18 +93,9 @@ const DeckList = (props = {}) => {
   }
 
   const renderItem = (item) => {
-    // const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
-    // const cardsDecoradas = progress.currentQuestionIndex;
-    // const cardsRestantes = item.cards.length - cardsDecoradas;
-
-    ////////////////////////////////////////////////////////////////////
-    const originalCards = item.cards.filter((card) => card.isOriginal);
+    const originalCards = item.cards.filter(card => card.isOriginal);
     const totalCards = originalCards.length;
-
-    const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
-    const cardsDecoradas = originalCards.filter(
-      (card) => card.isChecked
-    ).length;
+    const cardsDecoradas = originalCards.filter(card => card.isChecked).length;
     const cardsRestantes = totalCards - cardsDecoradas;
 
     decks.forEach((deck) => {
