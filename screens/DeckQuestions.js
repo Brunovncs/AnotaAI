@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import DecksContext from "../Decks/DeckContextFile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DeckQuestions = () => {
   const { state, dispatch } = useContext(DecksContext);
@@ -14,37 +15,96 @@ const DeckQuestions = () => {
   const [showAnswer, setShowAnswer] = useState(false); // Estado para mostrar a resposta
   const [allAnswered, setAllAnswered] = useState(false);
   const [showQuestion, setShowQuestion] = useState(true);
+  const [additionalQuestionsnumber, setAdditionalQuestions] = useState(0);
+  const intervalRef = useRef();
 
   useEffect(() => {
-    const selectedDeck = state.decks.find((deck) => deck.id === deckId);
-    setDeck(selectedDeck);
-    const deckProgress = state.progress[deckId] || { currentQuestionIndex: 0 };
-    setCurrentQuestionIndex(deckProgress.currentQuestionIndex);
-    if (deckProgress.currentQuestionIndex <= selectedDeck.cards.length - 1) {
-      console.log("entrou no if: deckProgress.currentquestionindex: ", deckProgress.currentQuestionIndex)
-      console.log("entrou no if: selectedDeck.cards.length: ", selectedDeck.cards.length)
+    const loadDeckAndAdditionalQuestions = async () => {
+      const selectedDeck = state.decks.find((deck) => deck.id === deckId);
+      const additionalLoadedQuestions = await loadAdditionalQuestions(deckId);
+      const mixedQuestions = [...selectedDeck.cards, ...additionalLoadedQuestions];
+      setDeck({ ...selectedDeck, cards: mixedQuestions });
 
-      setShowQuestion(true);
-      setAllAnswered(false);
-    } else {
-      setShowQuestion(false);
-      setAllAnswered(true);
-    }
+      const deckProgress = state.progress[deckId] || { currentQuestionIndex: 0 };
+      setCurrentQuestionIndex(deckProgress.currentQuestionIndex);
+
+      if (deckProgress.currentQuestionIndex <= mixedQuestions.length - 1) {
+        setShowQuestion(true);
+        setAllAnswered(false);
+      } else {
+        setShowQuestion(false);
+        setAllAnswered(true);
+      }
+    };
+
+    loadDeckAndAdditionalQuestions();
     setShowAnswer(false);
     setShowAnswerButtons(false);
   }, [state.decks, deckId, state.progress]);
 
-  const handleAnswer = (difficulty) => {
+  const handleAnswer = async (difficulty) => {
     setShowAnswer(false);
     setShowAnswerButtons(false);
-    if (currentQuestionIndex < deck.cards.length - 1) {
+    let repetitionCount = 1; // Fácil
+    if (difficulty === "medium") repetitionCount = 2; // Médio
+    if (difficulty === "hard") repetitionCount = 3; // Difícil
+
+    const additionalQuestionsKey = `additionalQuestions_${deckId}`;
+    let additionalQuestions = [];
+
+    try {
+      const storedQuestions = await AsyncStorage.getItem(
+        additionalQuestionsKey
+      );
+      if (storedQuestions) {
+        additionalQuestions = JSON.parse(storedQuestions);
+      }
+    } catch (error) {
+      console.error(
+        "Erro ao carregar perguntas adicionais do AsyncStorage: ",
+        error
+      );
+    }
+
+    // Encontrar o maior ID atual
+    let maxId = deck.cards.reduce(
+      (max, card) => (card.id > max ? card.id : max),
+      0
+    );
+    additionalQuestions.forEach((q) => {
+      if (q.id > maxId) maxId = q.id;
+    });
+    maxId - 2;
+
+    // Adicionar perguntas adicionais com novos IDs
+    for (let i = 0; i < repetitionCount; i++) {
+      maxId += 1;
+      console.log("maxId: ", maxId)
+      additionalQuestions.push({ ...currentQuestion, id: maxId });
+    }
+
+    await saveAdditionalQuestions(deckId, additionalQuestions);
+
+    // Carrega perguntas adicionais após responder a uma pergunta
+    const additionalLoadedQuestions = await loadAdditionalQuestions(deckId);
+    const mixedQuestions = [...deck.cards, ...additionalLoadedQuestions];
+    setDeck({ ...deck, cards: mixedQuestions });
+
+    // Calcula o novo tamanho total de perguntas, incluindo perguntas originais e adicionais
+    const totalQuestionsLength = mixedQuestions.length;
+    setAdditionalQuestions(totalQuestionsLength);
+
+    // console.log("additionalQueastionnumber : ", additionalQuestionsnumber)
+    // console.log("totalQuestionsLength: ", mixedQuestions.length)
+    // console.log("currentQuestionIndex: ", currentQuestionIndex)
+    if (currentQuestionIndex < totalQuestionsLength - 1) {
       const newIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(newIndex);
       updateDeckProgress(newIndex);
     } else {
-      setAllAnswered(true);
-      setShowQuestion(false);
-      updateDeckProgress(deck.cards.length);
+      // setAllAnswered(true);
+      // setShowQuestion(false);
+      updateDeckProgress(totalQuestionsLength);
     }
   };
 
@@ -63,6 +123,33 @@ const DeckQuestions = () => {
     setShowAnswerButtons(true);
   };
 
+  async function saveAdditionalQuestions(deckId, questions) {
+    try {
+      await AsyncStorage.setItem(`additionalQuestions_${deckId}`, JSON.stringify(questions));
+      console.log("questionadd:", questions);
+    } catch (error) {
+      console.error(
+        "Erro ao salvar perguntas adicionais no AsyncStorage: ",
+        error
+      );
+    }
+  }
+
+  async function loadAdditionalQuestions(deckId) {
+    try {
+      const questions = await AsyncStorage.getItem(
+        `additionalQuestions_${deckId}`
+      );
+      return questions ? JSON.parse(questions) : [];
+    } catch (error) {
+      console.error(
+        "Erro ao carregar perguntas adicionais do AsyncStorage: ",
+        error
+      );
+      return [];
+    }
+  }
+
   if (!deck) {
     return (
       <View style={styles.container}>
@@ -70,9 +157,10 @@ const DeckQuestions = () => {
       </View>
     );
   }
-  
+
+  console.log("deck: ", deck.cards[2]);
   const currentQuestion = deck.cards[currentQuestionIndex];
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.questionContainer}>
