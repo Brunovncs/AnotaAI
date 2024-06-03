@@ -27,6 +27,8 @@ export default (props) => {
     const cardsDecoradas = progress.currentQuestionIndex;
     const cardsRestantes = item.cards.length - cardsDecoradas;
 
+    console.log("Rendering deck item: ", item);
+
     return (
       <ListItem
         key={item.id}

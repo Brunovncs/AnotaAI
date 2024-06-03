@@ -6,43 +6,11 @@ const DecksContext = createContext({});
 const initialState = { decks, progress: {} };
 
 const actions = {
-<<<<<<< HEAD
-=======
-  updateEvent(state, action) {
-    const updated = action.payload;
-    //mapeia os decks existentes no estado, substituindo o evento com o mesmo id pelo evento atualizado
-    const updatedTests = state.decks.map((u) =>
-      u.id === updated.id ? updated : u
-    );
-    saveTests(updatedTests);
-    return {
-      ...state,
-      decks: updatedTests,
-    };
-  },
-  createEvent(state, action) {
-    const evento = action.payload;
-    //define um id aleatório como id
-    evento.id = Math.random();
-    const updatedTests = [...state.decks, evento];
-    saveTests(updatedTests);
-    console.log(decks)
-    console.log("deck salvo!");
-    return {
-      ...state,
-      decks: updatedTests,
-    };
-  },
->>>>>>> 053d779416962b31152a4ce4d56eb9881fedd582
   addCardtoDeck(state, action) {
     const { cards, id } = action.payload;
     const updatedEvents = state.decks.map((evento) => {
       if (evento.id == id) {
-<<<<<<< HEAD
           console.log("ENCONTROU")
-=======
-    console.log("ENCONTROU")
->>>>>>> 053d779416962b31152a4ce4d56eb9881fedd582
           if (evento.cards == null) {
             evento.cards = [];
           }
@@ -52,20 +20,10 @@ const actions = {
         //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
          console.log(updatedLista);     
           return { ...evento, cards: updatedLista }; //retorna a lista atualizada
-<<<<<<< HEAD
       }
       return evento;
     });
     saveDecks(updatedEvents);  
-=======
-
-      }
-      return evento;
-    });
-
-    saveTests(updatedEvents);  
-
->>>>>>> 053d779416962b31152a4ce4d56eb9881fedd582
     return { ...state, decks: updatedEvents };
   },
   loadDecksFromStorage(state, action) {
@@ -90,12 +48,13 @@ const actions = {
     const evento = action.payload;
     //define um id aleatório como id
     evento.id = Math.random();
-    const updatedTests = [...state.decks, evento];
-    saveTests(updatedTests);
+    const updatedDecks = [...state.decks, evento];
+
+    saveDecks(updatedDecks);
     console.log("deck salvo!");
     return {
       ...state,
-      decks: updatedTests,
+      decks: updatedDecks,
     };
   },
   updateSenha(state, action) {
@@ -105,7 +64,7 @@ const actions = {
       u.email === updated.email ? updated : u
     );
     console.log("senha atualizada");
-    saveTests(updatedTests);
+    saveDecks(updatedTests);
     return {
       ...state,
       decks: updatedTests,
@@ -156,14 +115,7 @@ const actions = {
   //   };
   // }  
 };
-async function saveTests(decks) {
-  try {
-    //converte decks para uma string JSON e salva no AsyncStorage
-    await AsyncStorage.setItem("decks", JSON.stringify(decks));
-  } catch (error) {
-    console.error("Erro ao salvar os usuarios no AsyncStorage:", error);
-  }
-}
+
 async function saveDecks(decks) {
   try {
     console.log("Salvando decks no AsyncStorage: ", decks);
@@ -191,7 +143,6 @@ async function saveProgress(progress) {
   }
 }
 
-
 async function loadProgress() {
   try {
     const progress = await AsyncStorage.getItem("progress");
@@ -206,7 +157,7 @@ export const DecksProvider = (props) => {
   useEffect(() => {
     async function fetchData() {
       //carrega os decks do AsyncStorage utilizando a função loadDecks
-      await saveDecks(decks)
+      // await saveDecks(decks)
       const loadedDecks = await loadDecks();
       const loadedProgress = await loadProgress();
       dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
@@ -223,9 +174,7 @@ export const DecksProvider = (props) => {
   }, []);
 
   function reducer(state, action) {
-    //obtém a função correspondente à ação do actions
     const fn = actions[action.type];
-    //executa a função correspondente se existir, senão retorna o estado atual
     return fn ? fn(state, action) : state;
   }
 
