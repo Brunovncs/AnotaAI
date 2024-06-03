@@ -13,47 +13,32 @@ const DeckList = (props = {}) => {
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [decks, setDecks] = useState(state.decks);
+  // const [decks, setDecks] = useState(state.decks);
 
   const identificadorUsuario = route.params?.identificadorUsuario;
-
-  console.log("IDENTIFICADOR_USUARIO:", identificadorUsuario);
-
-  console.log("DECKS: " + state.decks);
-
-  // useEffect(() => {
-  //   async function fetchDecks() {
-  //     try {
-  //       const savedDecks = await AsyncStorage.getItem("decks");
-  //       const decks = savedDecks ? JSON.parse(savedDecks) : [];
-  //       dispatch({ type: "loadDecksFromStorage", payload: { decks } });
-  //       setDecks(decks);
-  //     } catch (error) {
-  //       console.error("Erro ao carregar os decks do AsyncStorage", error);
-  //     }
-  //   }
-
-  //   if (isFocused) {
-  //     fetchDecks();
-  //   }
-  // }, [isFocused]);
 
   useEffect(() => {
     async function fetchDecks() {
       try {
-        const savedDecks = await AsyncStorage.getItem("decks");
-        const decks = savedDecks ? JSON.parse(savedDecks) : [];
+        
+        // const savedDecks = await AsyncStorage.getItem("decks");
 
+        // console.log(state.decks)
+        // const decks = savedDecks ? JSON.parse(savedDecks) : [];
+        
         // Filtrando os decks com base no userId
-        const filteredDecks = decks.filter(
-          (deck) => deck.userId == identificadorUsuario
-        );
+        const filteredDecks = state.decks.filter(deck => deck.userId == identificadorUsuario);
 
-        dispatch({
-          type: "loadDecksFromStorage",
-          payload: { decks: filteredDecks },
+        // setDecks(filteredDecks);
+        
+        // dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
+  
+        // // Verificando o isChecked de cada carta (card) nos decks filtrados
+        filteredDecks.forEach(deck => {
+          deck.cards.forEach(card => {
+            console.log("isChecked:", card.isChecked);
+          });
         });
-        setDecks(filteredDecks); // Atualizando o estado com os decks filtrados
       } catch (error) {
         console.error("Erro ao carregar os decks do AsyncStorage", error);
       }
