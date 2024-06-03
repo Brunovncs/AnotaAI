@@ -43,7 +43,8 @@ function TelaLogin() {
       (u) => u.email === form.email && u.senha === form.password
     );
     if (user) {
-      navigation.navigate("Drawer", {IdentificadorUsuario: form.id});
+      console.log("ID USUARIO: " + user.id)
+      navigation.navigate("Drawer", user.id);
     } else {
       Alert.alert("Erro", "Email ou senha errados!");
     }

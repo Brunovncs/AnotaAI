@@ -8,5 +8,5 @@ export default users = [
         email: "1",
         senha: "2",
         id: "20"
-    }
+    },
 ];
