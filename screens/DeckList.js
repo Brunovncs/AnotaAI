@@ -32,24 +32,6 @@ export default (props) => {
     console.log("Rendering deck item: ", item);
 
     return (
-      // <ListItem
-      //   key={item.id}
-      //   containerStyle={styles.itemContainer}
-      //   onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
-      // >
-      //   <ListItem.Content>
-      //     <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>
-      //     <ListItem.Subtitle style={styles.subtitle}>Total de Cartas: {item.cards.length}</ListItem.Subtitle>
-      //     <ListItem.Subtitle style={styles.subtitle}>Cartas Decoradas: {cardsDecoradas}</ListItem.Subtitle>
-      //     <ListItem.Subtitle style={styles.subtitle}>Cartas Restantes: {cardsRestantes}</ListItem.Subtitle>
-      //     <TouchableOpacity
-      //       style={styles.resetButton}
-      //       onPress={() => resetDeckProgress(item.id)}
-      //     >
-      //       <Text style={styles.resetButtonText}>Resetar Progresso</Text>
-      //     </TouchableOpacity>
-      //   </ListItem.Content>
-      // </ListItem>
       <ListItem
       key={item.id}
       containerStyle={styles.itemContainer}
@@ -63,11 +45,11 @@ export default (props) => {
           </ListItem.Subtitle>
           <ListItem.Subtitle style={styles.subtitle}>
             Cartas Decoradas:{" "}
-            {item.cards.filter((deck) => deck.isChecked).length}
+            {cardsDecoradas}
           </ListItem.Subtitle>
           <ListItem.Subtitle style={styles.subtitle}>
             Cartas Restantes:{" "}
-            {item.cards.filter((deck) => !deck.isChecked).length}
+            {cardsRestantes}
           </ListItem.Subtitle>
           <TouchableOpacity
             style={styles.resetButton}
