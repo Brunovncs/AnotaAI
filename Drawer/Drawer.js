@@ -19,7 +19,7 @@ import Estatisticas from "../screens/Estatisticas";
 
 const Drawer = createDrawerNavigator();
 
-export default (props) => (
+export default () => (
   <PaperProvider>
     <DecksProvider>
       <EventsProvider>

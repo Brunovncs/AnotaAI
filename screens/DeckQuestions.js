@@ -45,9 +45,9 @@ const DeckQuestions = () => {
   const handleAnswer = async (difficulty) => {
     setShowAnswer(false);
     setShowAnswerButtons(false);
-    let repetitionCount = 1; // Fácil
-    if (difficulty === "medium") repetitionCount = 2; // Médio
-    if (difficulty === "hard") repetitionCount = 3; // Difícil
+    let repetitionCount = 0; // Fácil
+    if (difficulty === "medium") repetitionCount = 1; // Médio
+    if (difficulty === "hard") repetitionCount = 2; // Difícil
 
     const additionalQuestionsKey = `additionalQuestions_${deckId}`;
     let additionalQuestions = [];
@@ -80,7 +80,7 @@ const DeckQuestions = () => {
     for (let i = 0; i < repetitionCount; i++) {
       maxId += 1;
       console.log("maxId: ", maxId)
-      additionalQuestions.push({ ...currentQuestion, id: maxId });
+      additionalQuestions.push({ ...currentQuestion, id: maxId, isOriginal: false, originalQuestionId: currentQuestion.id });
     }
 
     await saveAdditionalQuestions(deckId, additionalQuestions);
@@ -106,6 +106,34 @@ const DeckQuestions = () => {
       // setShowQuestion(false);
       updateDeckProgress(totalQuestionsLength);
     }
+
+    checkAndMarkOriginalQuestionAsChecked(currentQuestion.id);
+  };
+
+  const checkAndMarkOriginalQuestionAsChecked = (originalQuestionId) => {
+    const originalQuestion = deck.cards.find(card => card.isOriginal && card.id === originalQuestionId);
+    const extraQuestions = deck.cards.filter(card => card.originalQuestionId === originalQuestionId);
+
+    const allExtraQuestionsChecked = extraQuestions.every(card => card.isChecked);
+
+    if (originalQuestion && allExtraQuestionsChecked) {
+      originalQuestion.isChecked = true;
+      updateDeckInContext(deckId, originalQuestion);
+    }
+  };
+
+  const updateDeckInContext = (deckId, updatedQuestion) => {
+    const updatedDecks = state.decks.map(deck => {
+      if (deck.id === deckId) {
+        return {
+          ...deck,
+          cards: deck.cards.map(card => (card.id === updatedQuestion.id ? updatedQuestion : card))
+        };
+      }
+      return deck;
+    });
+
+    dispatch({ type: "updateDecks", payload: { decks: updatedDecks } });
   };
 
   const updateDeckProgress = (newIndex) => {
@@ -126,7 +154,7 @@ const DeckQuestions = () => {
   async function saveAdditionalQuestions(deckId, questions) {
     try {
       await AsyncStorage.setItem(`additionalQuestions_${deckId}`, JSON.stringify(questions));
-      console.log("questionadd:", questions);
+      // console.log("questionadd:", questions);
     } catch (error) {
       console.error(
         "Erro ao salvar perguntas adicionais no AsyncStorage: ",
@@ -158,16 +186,25 @@ const DeckQuestions = () => {
     );
   }
 
-  console.log("deck: ", deck.cards[2]);
+  // console.log("currentQuestionIndex: ", currentQuestionIndex);
+  // console.log("additionalQuestionsnumber: ", additionalQuestionsnumber);
+  // console.log("allAnsweredbefore: ", allAnswered);
+
   const currentQuestion = deck.cards[currentQuestionIndex];
+
+  if(!currentQuestion) {
+    // console.log("allAnswered: ", allAnswered);
+    // console.log("showQuestion: ", showQuestion);
+    // console.log("showAnswer: ", showAnswer);
+  } 
 
   return (
     <View style={styles.container}>
       <View style={styles.questionContainer}>
-        {showQuestion && (
+        {showQuestion && currentQuestion && (
           <Text style={styles.questionText}>{currentQuestion.question}</Text>
         )}
-        {showAnswer && (
+        {showAnswer && currentQuestion && (
           <Text style={styles.answerText}>{currentQuestion.answer}</Text>
         )}
         {!allAnswered && !showAnswerButtons && (

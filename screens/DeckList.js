@@ -7,7 +7,7 @@ import { Icon } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-export default (props) => {
+  const DeckList = (props = {}) => {
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -17,6 +17,7 @@ export default (props) => {
     async function fetchDecks() {
       try {
         const savedDecks = await AsyncStorage.getItem("decks");
+        
         const decks = savedDecks ? JSON.parse(savedDecks) : [];
         dispatch({ type: "loadDecksFromStorage", payload: { decks } });
         setDecks(decks);
@@ -38,12 +39,47 @@ export default (props) => {
         progress: { currentQuestionIndex: 0 },
       },
     });
+
+    // Atualizar o estado decks após resetar o progresso
+    const updatedDecks = state.decks.map(deck => {
+      if (deck.id === deckId) {
+        return {
+          ...deck,
+          cards: deck.cards.map(card => ({ ...card, isChecked: false })),
+        };
+      }
+      return deck;
+    });
+    dispatch({ type: "loadDecksFromStorage", payload: { decks: updatedDecks } });
   };
 
   const renderItem = (item) => {
+    // const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
+    // const cardsDecoradas = progress.currentQuestionIndex;
+    // const cardsRestantes = item.cards.length - cardsDecoradas;
+
+////////////////////////////////////////////////////////////////////
+    const originalCards = item.cards.filter(card => card.isOriginal);
+    const totalCards = originalCards.length;
+
     const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
-    const cardsDecoradas = progress.currentQuestionIndex;
-    const cardsRestantes = item.cards.length - cardsDecoradas;
+    const cardsDecoradas = originalCards.filter(card => card.isChecked).length;
+    const cardsRestantes = totalCards - cardsDecoradas;
+
+    decks.forEach((deck) => {
+      deck.cards.forEach((card) => {
+        console.log(
+          `Card ID: ${card.id}, isOriginal: ${card.isOriginal}, isChecked: ${card.isChecked}`
+        );
+      });
+    });
+    console.log("/////////////////////////")
+////////////////////////////////////////////////////////////////////
+
+    // console.log("originalCards: ", originalCards);
+    // console.log("cardsDecoradas: ", cardsDecoradas);
+    // console.log("cardsRestantes: ", cardsRestantes);
+    
     return (
       <ListItem
       key={item.id}
@@ -150,3 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
+export default DeckList;

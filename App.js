@@ -36,7 +36,7 @@ function TelaLogin() {
   // consolee.log("numero de usuarios"+ state.users.length);
   // Function to handle sign-in]
 
-  // consolee.log(state.users); // Print the users array to the // consolee
+  // console.log(state.users); // Print the users array to the // consolee
 
   const handleSignIn = () => {
     const user = state.users.find(
@@ -64,7 +64,7 @@ function TelaLogin() {
             />
 
             <Text style={styles.title}>
-              A<Text style={{ color: "#d63031" }}>nota</Text>AI!
+              A<Text style={styles.notecolor}>nota</Text>AI!
             </Text>
 
             <Text style={styles.subtitle}>
@@ -251,6 +251,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+  },
+  notecolor: {
+    color: "#d63031",
   },
   title: {
     fontSize: 31,
