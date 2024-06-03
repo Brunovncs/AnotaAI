@@ -5,6 +5,8 @@ import DecksContext from "../Decks/DeckContextFile";
 import { useNavigation } from "@react-navigation/native";
 import EventsContext from "../User/UserContextFile";
 import TestsContext from "../Decks/TestContextFile";
+import { Icon, Button } from "@rneui/themed";
+
 
 export default (props) => {
   const { state, dispatch } = useContext(DecksContext);
@@ -30,24 +32,60 @@ export default (props) => {
     console.log("Rendering deck item: ", item);
 
     return (
+      // <ListItem
+      //   key={item.id}
+      //   containerStyle={styles.itemContainer}
+      //   onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
+      // >
+      //   <ListItem.Content>
+      //     <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>
+      //     <ListItem.Subtitle style={styles.subtitle}>Total de Cartas: {item.cards.length}</ListItem.Subtitle>
+      //     <ListItem.Subtitle style={styles.subtitle}>Cartas Decoradas: {cardsDecoradas}</ListItem.Subtitle>
+      //     <ListItem.Subtitle style={styles.subtitle}>Cartas Restantes: {cardsRestantes}</ListItem.Subtitle>
+      //     <TouchableOpacity
+      //       style={styles.resetButton}
+      //       onPress={() => resetDeckProgress(item.id)}
+      //     >
+      //       <Text style={styles.resetButtonText}>Resetar Progresso</Text>
+      //     </TouchableOpacity>
+      //   </ListItem.Content>
+      // </ListItem>
       <ListItem
-        key={item.id}
-        containerStyle={styles.itemContainer}
-        onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
-      >
-        <ListItem.Content>
+      key={item.id}
+      containerStyle={styles.itemContainer}
+      onPress={() => navigation.navigate("DeckQuestions", { deckId: item.id })}
+    >
+      <ListItem.Content style={styles.contentContainer}>
+        <View style={styles.textContainer}>
           <ListItem.Title style={styles.deckName}>{item.name}</ListItem.Title>
-          <ListItem.Subtitle style={styles.subtitle}>Total de Cartas: {item.cards.length}</ListItem.Subtitle>
-          <ListItem.Subtitle style={styles.subtitle}>Cartas Decoradas: {cardsDecoradas}</ListItem.Subtitle>
-          <ListItem.Subtitle style={styles.subtitle}>Cartas Restantes: {cardsRestantes}</ListItem.Subtitle>
+          <ListItem.Subtitle style={styles.subtitle}>
+            Total de Cartas: {item.cards.length}
+          </ListItem.Subtitle>
+          <ListItem.Subtitle style={styles.subtitle}>
+            Cartas Decoradas:{" "}
+            {item.cards.filter((deck) => deck.isChecked).length}
+          </ListItem.Subtitle>
+          <ListItem.Subtitle style={styles.subtitle}>
+            Cartas Restantes:{" "}
+            {item.cards.filter((deck) => !deck.isChecked).length}
+          </ListItem.Subtitle>
           <TouchableOpacity
             style={styles.resetButton}
             onPress={() => resetDeckProgress(item.id)}
           >
             <Text style={styles.resetButtonText}>Resetar Progresso</Text>
           </TouchableOpacity>
-        </ListItem.Content>
-      </ListItem>
+        </View>
+        <Icon
+          name="add"
+          size={30}
+          color="white"
+          onPress={() => {
+            console.log("Navigating to AddCard with:" + item.cards + "ITEM ID:" + item.id);
+            props.navigation.navigate("AddCard", {cards: item.cards, cardId:item.id})}}
+        />
+      </ListItem.Content>
+    </ListItem>
     );
   };
 
