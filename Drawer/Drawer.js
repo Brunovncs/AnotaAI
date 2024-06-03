@@ -20,7 +20,6 @@ import Estatisticas from "../screens/Estatisticas";
 
 const Drawer = createDrawerNavigator();
 
-export default () => (
 export default ({props}) => {
   const route = useRoute();
   const IdentificadorUsuario = route.params;
