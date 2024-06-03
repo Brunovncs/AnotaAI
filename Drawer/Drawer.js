@@ -16,7 +16,6 @@ import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
 import CardBrowser from "../screens/CardBrowser";
 import DeckQuestions from "../screens/DeckQuestions";
-import Estatisticas from "../screens/Estatisticas";
 
 const Drawer = createDrawerNavigator();
 
@@ -74,16 +73,6 @@ export default ({props}) => {
                   />
                 );
               },
-            };
-          }}
-        />
-        <Drawer.Screen
-          name="Estatísticas"
-          component={Estatisticas}
-          options={({ navigation }) => {
-            const { dispatch } = useContext(DecksContext);
-            return {
-              title: "Estatísticas",
             };
           }}
         />

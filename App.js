@@ -45,6 +45,8 @@ function TelaLogin() {
     if (user) {
       console.log("ID USUARIO: " + user.id)
       navigation.navigate("Drawer", user.id);
+      setForm({ email: "", password: "" }); // Limpa os campos de entrada após o login
+
     } else {
       Alert.alert("Erro", "Email ou senha errados!");
     }

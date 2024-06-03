@@ -6,6 +6,16 @@ const DecksContext = createContext({});
 const initialState = { decks, progress: {} };
 
 const actions = {
+  deleteEvent(state, action) {
+    const evento = action.payload;
+      //filtra os eventos existentes para remover o evento com o ID correspondente
+    const updatedEvents = state.decks.filter((u) => u.id !== evento.id);
+    saveDecks(updatedEvents);//salva o evento atualizado no async storage 
+    return {
+      ...state, 
+      decks: updatedEvents,
+    }; 
+  },
   deleteReserva(state, action) {
     const { item, selectedDeck} = action.payload;//recebe os parâmetros enviados 
 
@@ -156,7 +166,6 @@ const actions = {
     };
   }
 };
-
 async function saveDecks(decks) {
   try {
     console.log("Salvando decks no AsyncStorage: ", decks);

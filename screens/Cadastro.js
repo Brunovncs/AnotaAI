@@ -30,6 +30,8 @@ export default ({ route, navigation }) => {
         onChangeText={(senha) => setEvent({ ...evento, senha })} //atualiza o local do evento
         placeholder="********"
         value={evento.senha}
+        secureTextEntry={true}
+
       />
     <TouchableOpacity
       style={style.button}

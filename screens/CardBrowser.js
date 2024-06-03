@@ -11,6 +11,14 @@ export default (props) => {
   const { state, dispatch} = useContext(DecksContext);
   const [selectedDeck, setSelectedDeck] = useState(state.decks[0]?.id || null);
 
+  if(state.decks.length == 0){
+    return(
+      <View style={styles.container}>
+    <Text>Crie decks para aparecerem aqui!</Text>
+    </View>
+    )
+  }else{
+
   const confirmReservaDeletion = (item, selectedDeck) => {
     Alert.alert(
       "Excluir Reserva",
@@ -58,10 +66,35 @@ export default (props) => {
         />
       </View>
     </View>
-  );}
+  );
+}
+
 
   const selectedDeckData = state.decks.find((deck) => deck.id === selectedDeck);
 
+  // return (
+  //   <View style={styles.container}>
+  //     <Picker
+  //       selectedValue={selectedDeck}
+  //       onValueChange={(itemValue) => setSelectedDeck(itemValue)}
+  //       style={styles.picker}
+  //     >
+  //       {state.decks.map((deck) => (
+  //         <Picker.Item key={deck.id} label={deck.name} value={deck.id} />
+  //       ))}
+  //     </Picker>
+  //     {selectedDeckData && (
+  //       <View style={styles.deck}>
+  //         <Text style={styles.deckTitle}>{selectedDeckData.name}</Text>
+  //         <FlatList
+  //           data={selectedDeckData.cards}
+  //           renderItem={renderCard}
+  //           keyExtractor={(card) => card.id}
+  //         />
+  //       </View>
+  //     )}
+  //   </View>
+  // );
   return (
     <View style={styles.container}>
       <Picker
@@ -76,16 +109,26 @@ export default (props) => {
       {selectedDeckData && (
         <View style={styles.deck}>
           <Text style={styles.deckTitle}>{selectedDeckData.name}</Text>
-          <FlatList
-            data={selectedDeckData.cards}
-            renderItem={renderCard}
-            keyExtractor={(card) => card.id}
-          />
+          {selectedDeckData.cards && selectedDeckData.cards.length > 0 ? (
+            <FlatList
+              data={selectedDeckData.cards}
+              renderItem={renderCard}
+              keyExtractor={(card) => card.id}
+            />
+          ) : (
+            <View>
+              <Text>Não existem cartas nesse deck</Text>
+            </View>
+          )}
         </View>
       )}
     </View>
   );
+
+}
 };
+
+
 
 const styles = StyleSheet.create({
   card: {
