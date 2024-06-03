@@ -158,6 +158,7 @@ export const DecksProvider = (props) => {
   useEffect(() => {
     async function fetchData() {
       //carrega os decks do AsyncStorage utilizando a função loadDecks
+      //await saveDecks(decks)
       const loadedDecks = await loadDecks();
       const loadedProgress = await loadProgress();
       if (loadedDecks.length === 0) {
