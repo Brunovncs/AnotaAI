@@ -101,20 +101,20 @@ const actions = {
       progress: loadedProgress,
     };
   },
-  // carregarEvents(state, action) {
-  //   const loadedEvents = action.payload.decks;
-  //   return {
-  //     ...state,
-  //     decks: loadedEvents,
-  //   };
-  // },
-  // gerarRandom(state, action) {
-  //   const loadedEvents = action.payload;
-  //   return {
-  //     ...state,
-  //     decks: loadedEvents,
-  //   };
-  // }
+  carregarEvents(state, action) {
+    const loadedEvents = action.payload.decks;
+    return {
+      ...state,
+      decks: loadedEvents,
+    };
+  },
+  gerarRandom(state, action) {
+    const loadedEvents = action.payload;
+    return {
+      ...state,
+      decks: loadedEvents,
+    };
+  }
 };
 
 async function saveDecks(decks) {
@@ -158,18 +158,22 @@ export const DecksProvider = (props) => {
   useEffect(() => {
     async function fetchData() {
       //carrega os decks do AsyncStorage utilizando a função loadDecks
-      //await saveDecks(decks)
+      // await saveDecks(decks)
       const loadedDecks = await loadDecks();
       const loadedProgress = await loadProgress();
-      if (loadedDecks.length === 0) {
-        // Se não houver decks no AsyncStorage, carregue do arquivo e salve no AsyncStorage
-        await saveDecks(decks);
-        dispatch({ type: "loadDecksFromStorage", payload: { decks } });
-      } else {
-        // Caso contrário, carregue do AsyncStorage
-        dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
+      if(loadedDecks.decks.length !== 0){
+        dispatch({ type: "carregarTests", payload: loadedDecks });
+        dispatch({ type: "loadDeckProgress", payload: loadedProgress });
+      }else{
+        dispatch({ type: "gerarRandom", payload: decks });
       }
-      dispatch({ type: "loadDeckProgress", payload: loadedProgress });
+      // if (loadedDecks.decks.length !== 0) {
+      // //se existirem decks carregados, despacha uma ação para carregar os decks no estado
+      //   dispatch({ type: "carregarDecks", payload: loadedDecks });
+      // } else {        
+      //   //se não, despacha uma ação para gerar decks aleatórios
+      //   dispatch({ type: "gerarRandom", payload: decks });
+      // }
     }
     fetchData();
   }, []);
