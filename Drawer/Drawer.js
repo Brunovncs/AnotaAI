@@ -2,10 +2,14 @@ import React, { useContext, useState } from "react";
 import { StyleSheet, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Icon } from "@rneui/themed";
-import { createDrawerNavigator, DrawerItem } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerItem,
+  DrawerContentScrollView
+} from "@react-navigation/drawer";
 import { Menu, Provider as PaperProvider } from "react-native-paper";
 import DecksContext, { DecksProvider } from "../Decks/DeckContextFile";
-import TestsContext, {TestsProvider} from "../Decks/TestContextFile";
+import TestsContext, { TestsProvider } from "../Decks/TestContextFile";
 
 import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
@@ -25,24 +29,6 @@ export default (props) => (
         <Drawer.Screen
           name="Lista_de_Decks"
           component={DeckList}
-          // options={({ navigation }) => {
-          //   const { dispatch } = useContext(DecksContext);
-          //   return {
-          //     title: "Decks",
-          //     headerRight: () =>
-          //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          //     <Button
-          //       onPress={() => props.navigation.navigate("AddDeck")}
-          //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
-          //       icon={<Icon name="add" size={25} color="white" />}
-          //     />
-          //     <Button
-          //       type="clear" // pode ser solid ou outline, nesse caso é sem fundo
-          //       icon={<Icon name="more-vert" size={25} color="white" />}
-          //     />
-          //   </View>,
-          //   };
-          // }}
           options={({ navigation }) => {
             useContext(TestsContext);
             const { dispatch } = useContext(TestsContext);
@@ -163,4 +149,23 @@ const screenOptions = {
   headerTitleStyle: {
     fontWeight: "bold",
   },
+  drawerStyle: {
+    backgroundColor: '#ffeaa7',
+    width: 240,
+  },
+  drawerContentOptions: {
+    activeBackgroundColor: '#fff', /* bg color for active screen */
+    inactiveBackgroundColor: 'transparent', /* bg color for inactive screens */
+  },
+  drawerContentStyle: {
+    flex: 1,
+    backgroundColor: '#ffeaa7',
+  },
+  contentContainerStyle: {
+    marginTop: 50,
+    marginLeft: 10,
+  },
+  sceneContainerStyle: {
+    backgroundColor: '#ffeaa7',
+  }
 };
