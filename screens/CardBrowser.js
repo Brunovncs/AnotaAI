@@ -1,13 +1,40 @@
 import React, { useContext, useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Icon, Button } from "@rneui/themed";
-import TestsContext from "../Decks/TestContextFile"; // Certifique-se de que o caminho esteja correto
 import DecksContext from "../Decks/DeckContextFile";
+import { useNavigation } from "@react-navigation/native";
 
-export default () => {
-  const { state } = useContext(DecksContext);
+
+export default (props) => {
+  const navigation = useNavigation();
+  const { state, dispatch} = useContext(DecksContext);
   const [selectedDeck, setSelectedDeck] = useState(state.decks[0]?.id || null);
+
+  const confirmReservaDeletion = (item, selectedDeck) => {
+    Alert.alert(
+      "Excluir Reserva",
+      "Deseja excluir essa reserva?",
+      [
+        {
+          text: "Sim",
+          onPress: () => {
+            dispatch({
+              type: "deleteReserva",
+              payload: { 
+                item,
+                selectedDeck,
+                // id: eventoId
+              },
+            });
+            // navigation.goBack();
+          },
+        },
+        { text: "Não" },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const renderCard = ({ item }) => (
     <View style={styles.card}>
@@ -17,10 +44,14 @@ export default () => {
       </View>
       <View style={styles.iconContainer}>
         <Button
+          onPress={() => props.navigation.navigate("EditCard", {item: item, deckId: selectedDeck})}
           type="clear"
           icon={<Icon name="edit" size={25} color="black" />}
         />
         <Button
+          onPress={() => {
+            console.log("item id: " + item.id)
+            confirmReservaDeletion(item.id, selectedDeck)}}
           type="clear"
           icon={<Icon name="delete" size={25} color="black" />}
         />

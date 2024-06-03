@@ -149,3 +149,4 @@ const styles = StyleSheet.create({
     alignItems: "center", // Center items vertically
   },
 });
+

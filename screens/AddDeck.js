@@ -43,7 +43,6 @@ export default () => {
               type: "createEvent",
               payload: nomeDeck,
             });
-            navigation.goBack();
           } else {
             Alert.alert(
               "Campos Vazios",

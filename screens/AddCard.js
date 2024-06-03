@@ -21,9 +21,6 @@ export default () => {
     const [cards, SetCard] = useState(route.params.cards);
     const cardId = route.params?.cardId;
 
-    console.log("ID: ", cardId);
-    console.log("card: ", cards);
-
   return (
     <View style={styles.container}>
       {/* Centered Text Input for Perguntas */}
