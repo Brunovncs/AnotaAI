@@ -5,31 +5,62 @@ import DecksContext from "../Decks/DeckContextFile";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRoute } from '@react-navigation/native';
+
 
 
   const DeckList = (props = {}) => {
+  const route = useRoute(); // Adicionado para acessar os parâmetros da rota
+
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [decks, setDecks] = useState(state.decks);
 
+  const identificadorUsuario = route.params?.identificadorUsuario;
+
+  console.log("IDENTIFICADOR_USUARIO:", identificadorUsuario);
+
+  console.log("DECKS: " + state.decks)
+
+  // useEffect(() => {
+  //   async function fetchDecks() {
+  //     try {
+  //       const savedDecks = await AsyncStorage.getItem("decks");
+  //       const decks = savedDecks ? JSON.parse(savedDecks) : [];
+  //       dispatch({ type: "loadDecksFromStorage", payload: { decks } });
+  //       setDecks(decks);
+  //     } catch (error) {
+  //       console.error("Erro ao carregar os decks do AsyncStorage", error);
+  //     }
+  //   }
+
+  //   if (isFocused) {
+  //     fetchDecks();
+  //   }
+  // }, [isFocused]);
+
   useEffect(() => {
     async function fetchDecks() {
       try {
         const savedDecks = await AsyncStorage.getItem("decks");
+        const decks = savedDecks? JSON.parse(savedDecks) : [];
         
-        const decks = savedDecks ? JSON.parse(savedDecks) : [];
-        dispatch({ type: "loadDecksFromStorage", payload: { decks } });
-        setDecks(decks);
+        // Filtrando os decks com base no userId
+        const filteredDecks = decks.filter(deck => deck.userId == identificadorUsuario);
+        
+        dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
+        setDecks(filteredDecks); // Atualizando o estado com os decks filtrados
       } catch (error) {
         console.error("Erro ao carregar os decks do AsyncStorage", error);
       }
     }
-
+  
     if (isFocused) {
       fetchDecks();
     }
   }, [isFocused]);
+  
 
   const resetDeckProgress = (deckId) => {
     dispatch({
@@ -80,6 +111,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
     // console.log("cardsDecoradas: ", cardsDecoradas);
     // console.log("cardsRestantes: ", cardsRestantes);
     
+    console.log("USERIDAAA: " + item.userId)
+    if(item.userId == identificadorUsuario){
     return (
       <ListItem
       key={item.id}
@@ -117,7 +150,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
         />
       </ListItem.Content>
     </ListItem>
-    );
+    );}
   };
 
   if (state.decks.length === 0) {

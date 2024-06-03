@@ -10,6 +10,7 @@ import {
 import { Menu, Provider as PaperProvider } from "react-native-paper";
 import DecksContext, { DecksProvider } from "../Decks/DeckContextFile";
 import EventsContext, {EventsProvider} from "../User/UserContextFile";
+import { useRoute } from "@react-navigation/native";
 
 import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
@@ -20,6 +21,11 @@ import Estatisticas from "../screens/Estatisticas";
 const Drawer = createDrawerNavigator();
 
 export default () => (
+export default ({props}) => {
+  const route = useRoute();
+  const IdentificadorUsuario = route.params;
+  console.log("ID USUARIO_2: " + IdentificadorUsuario)
+  return(
   <PaperProvider>
     <DecksProvider>
       <EventsProvider>
@@ -30,13 +36,13 @@ export default () => (
         <Drawer.Screen
           name="Lista_de_Decks"
           component={DeckList}
+          initialParams={{ identificadorUsuario: IdentificadorUsuario }} // Passando o identificadorUsuario como parâmetro inicial
           options={({ navigation }) => {
             useContext(DecksContext);
-            useContext(EventsContext);
             const { dispatch } = useContext(DecksContext);
             return {
               title: "Decks",
-              headerRight: () => <HeaderMenu navigation={navigation} />,
+              headerRight: () => <HeaderMenu navigation={navigation} identificadorUsuario={IdentificadorUsuario} />,
             };
           }}
         />
@@ -95,17 +101,19 @@ export default () => (
       </EventsProvider>
     </DecksProvider>
   </PaperProvider>
-);
+);}
 
-const HeaderMenu = ({ navigation }) => {
+const HeaderMenu = ({ navigation, identificadorUsuario }) => {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
+  console.log("HeaderMenu IdentificadorUsuario:", identificadorUsuario);
+
   return (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
       <Button
-        onPress={() => navigation.navigate("AddDeck")}
+        onPress={() => navigation.navigate("AddDeck", identificadorUsuario)}
         type="clear"
         icon={<Icon name="add" size={25} color="white" />}
       />

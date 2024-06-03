@@ -36,9 +36,9 @@ const actions = {
       if (evento.cards) {
         console.log("dentro da funçao id do evento: " + evento.id);
         if(evento.id == id){
-          console.log("entrou ids iguais");
+          console.log("encontrou o deck");
             const updatedLista = evento.cards.map((reserva) =>
-              reserva.id === id ? { ...reserva, ...updatedReserva } : reserva
+              reserva.id === cardId ? { ...reserva, ...updatedReserva } : reserva
             );
             return { ...evento, cards: updatedLista };//retorna o evento com a lista atualizada de reservas
         }
@@ -59,8 +59,8 @@ const actions = {
             evento.cards = [];
           }
           const newCard = { ...cards, id: Math.random().toString() };
-
           const updatedLista = [...evento.cards, newCard]; // atualiza a lista
+          console.log("LISTA: " + updatedLista)
         //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
           return { ...evento, cards: updatedLista }; //retorna a lista atualizada
       }
@@ -95,7 +95,6 @@ const actions = {
 
     saveDecks(updatedDecks);
     loadDecks(updatedDecks);
-    console.log("deck salvo!");
     return {
       ...state,
       decks: updatedDecks,
@@ -107,7 +106,6 @@ const actions = {
     const updatedTests = state.decks.map((u) =>
       u.email === updated.email ? updated : u
     );
-    console.log("senha atualizada");
     saveDecks(updatedTests);
     return {
       ...state,
@@ -119,7 +117,6 @@ const actions = {
     newDeck.id = Math.random();
     const newDecksArray = [...state.decks, newDeck];
     saveDecks(newDecksArray);
-    console.log("AA: " + decks)
     return {
      ...state,
       decks: newDecksArray,

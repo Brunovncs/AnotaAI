@@ -13,12 +13,18 @@ import TestsContext from "../Decks/TestContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import decks from "../Decks/decks";
+import { useRoute } from "@react-navigation/native";
+
 
 export default () => {
+  const route = useRoute();
+
+  const deckUserId = route.params;
   const navigation = useNavigation();
   const [nomeDeck, SetNomeDeck] = useState({
     name: "",
     cards: [],
+    userId: deckUserId
   });
 
   const { dispatch } = useContext(DecksContext);
@@ -43,13 +49,15 @@ export default () => {
               type: "createEvent",
               payload: nomeDeck,
             });
+            navigation.goBack();
           } else {
             Alert.alert(
               "Campos Vazios",
               "Por favor, preencha todos os campos."
             );
           }
-        }}
+        }
+      }
         style={styles.addButton}
       >
         <Text style={styles.addButtonText}>Adicionar</Text>

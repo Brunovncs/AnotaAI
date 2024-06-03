@@ -36,7 +36,9 @@ export default (props) => {
     );
   };
 
-  const renderCard = ({ item }) => (
+  const renderCard = ({ item }) => {
+    console.log("Questao: " + item.question + " Answer: " + item.answer + " ID: " + item.id)
+    return(
     <View style={styles.card}>
       <View style={styles.textContainer}>
         <Text style={styles.question}>{item.question}</Text>
@@ -50,14 +52,13 @@ export default (props) => {
         />
         <Button
           onPress={() => {
-            console.log("item id: " + item.id)
             confirmReservaDeletion(item.id, selectedDeck)}}
           type="clear"
           icon={<Icon name="delete" size={25} color="black" />}
         />
       </View>
     </View>
-  );
+  );}
 
   const selectedDeckData = state.decks.find((deck) => deck.id === selectedDeck);
 
