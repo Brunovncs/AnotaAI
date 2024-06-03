@@ -8,19 +8,20 @@ const initialState = { decks, progress: {} };
 const actions = {
   addCardtoDeck(state, action) {
     const { cards, id } = action.payload;
-    const updatedDecks = state.decks.map((deck) => {
-      if (deck.id == id) {
+    const updatedEvents = state.decks.map((evento) => {
+      if (evento.id == id) {
           console.log("ENCONTROU")
-          if (deck.cards == null) {
-            deck.cards = [];
+          if (evento.cards == null) {
+            evento.cards = [];
           }
           const newCard = { ...cards, id: Math.random().toString() };
 
-          const updatedLista = [...deck.cards, newCard]; // atualiza a lista
+          const updatedLista = [...evento.cards, newCard]; // atualiza a lista
+        //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
          console.log(updatedLista);     
-          return { ...deck, cards: updatedLista }; //retorna a lista atualizada
+          return { ...evento, cards: updatedLista }; //retorna a lista atualizada
       }
-      return deck;
+      return evento;
     });
     saveDecks(updatedEvents);  
     return { ...state, decks: updatedEvents };
@@ -44,10 +45,10 @@ const actions = {
     };
   },
   createEvent(state, action) {
-    const deck = action.payload;
+    const evento = action.payload;
     //define um id aleatório como id
-    deck.id = Math.random();
-    const updatedDecks = [...state.decks, deck];
+    evento.id = Math.random();
+    const updatedDecks = [...state.decks, evento];
 
     saveDecks(updatedDecks);
     loadDecks(updatedDecks);
@@ -160,10 +161,10 @@ export const DecksProvider = (props) => {
       const loadedDecks = await loadDecks();
       const loadedProgress = await loadProgress();
       if(loadedDecks.decks.length !== 0){
-        dispatch({ type: "carregarTests", payload: loadedDecks });
+        dispatch({ type: "loadDecksFromStorage", payload: loadedDecks });
         dispatch({ type: "loadDeckProgress", payload: loadedProgress });
       }else{
-        dispatch({ type: "gerarRandom", payload: decks });
+        await saveDecks(decks)
       }
     }
     fetchData();

@@ -19,6 +19,7 @@ import EventsContext, { EventsProvider } from "./User/UserContextFile";
 import RedefinirSenha from "./screens/RedefinirSenha";
 import DecksContext, {DecksProvider} from "./Decks/DeckContextFile";
 import AddCard from "./screens/AddCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 
