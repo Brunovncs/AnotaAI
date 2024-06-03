@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect} from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -21,22 +21,50 @@ import DecksContext, {DecksProvider} from "./Decks/DeckContextFile";
 import AddCard from "./screens/AddCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditCard from "./screens/EditCard";
+import { useIsFocused, useRoute } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 
-function TelaLogin() {
+function TelaLogin() {;
   // AsyncStorage.clear();
   // console.log("console limpado")
+
+  const route = useRoute(); // Adicionado para acessar os parâmetros da rota
+
+
   const { state, dispatch } = useContext(EventsContext);
+  const isFocused = useIsFocused()
+  const [users, setUsers] = useState(state.users);
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const navigation = useNavigation();
-  // consolee.log("numero de usuarios"+ state.users.length);
   // Function to handle sign-in]
 
-  // console.log(state.users); // Print the users array to the // consolee
+  console.log("USUARIOS" + state.users); 
+
+
+  useEffect(() => {
+    async function fetchDecks() {
+      try {
+        const savedDecks = await AsyncStorage.getItem("users");
+
+        // console.log(state.decks)
+        const users = savedDecks ? JSON.parse(savedDecks) : [];
+        
+        
+        dispatch({ type: "loadUsersFromStorage", payload: { users } });
+      } catch (error) {
+        console.error("Erro ao carregar os decks do AsyncStorage", error);
+      }
+    }
+
+    if (isFocused) {
+      fetchDecks();
+    }
+  }, [isFocused]);
 
   const handleSignIn = () => {
     const user = state.users.find(
@@ -44,13 +72,14 @@ function TelaLogin() {
     );
     if (user) {
       console.log("ID USUARIO: " + user.id)
-      navigation.navigate("Drawer", user.id);
+      navigation.navigate("Drawer", {userId: user.id, user: user});
       setForm({ email: "", password: "" }); // Limpa os campos de entrada após o login
 
     } else {
       Alert.alert("Erro", "Email ou senha errados!");
     }
   };
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#ffeaa7" }}>

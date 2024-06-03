@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Button } from "@rneui/themed";
 import { TextInput, Platform } from "react-native";
 import EventsContext from "../User/UserContextFile";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default ({ route, navigation }) => {
   //recebe os parâmetros e define que o evento novo não é favoritado
