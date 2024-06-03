@@ -32,11 +32,7 @@ function TelaLogin() {
     password: "",
   });
   const navigation = useNavigation();
-  console.log("numero de usuarios"+ state.users.length);
   // Function to handle sign-in]
-
-  console.log(state.users); // Print the users array to the console
-
   const handleSignIn = () => {
     const user = state.users.find(
       (u) => u.email === form.email && u.senha === form.password

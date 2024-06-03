@@ -11,9 +11,6 @@ export default (props) => {
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
-  console.log("DECKS: "+state.decks);
-
   const [decks, setDecks] = useState(state.decks);
 
   useEffect(() => {
@@ -47,9 +44,6 @@ export default (props) => {
     const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
     const cardsDecoradas = progress.currentQuestionIndex;
     const cardsRestantes = item.cards.length - cardsDecoradas;
-
-    console.log("Rendering deck item: ", item);
-
     return (
       <ListItem
       key={item.id}
