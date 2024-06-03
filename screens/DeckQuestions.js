@@ -63,10 +63,6 @@ const DeckQuestions = () => {
     setShowAnswerButtons(true);
   };
 
-  const handleAddQuestion = () => {
-    console.log("Adicionar nova pergunta");
-  };
-
   if (!deck) {
     return (
       <View style={styles.container}>
