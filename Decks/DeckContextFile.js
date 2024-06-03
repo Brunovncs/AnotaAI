@@ -8,20 +8,19 @@ const initialState = { decks, progress: {} };
 const actions = {
   addCardtoDeck(state, action) {
     const { cards, id } = action.payload;
-    const updatedEvents = state.decks.map((evento) => {
-      if (evento.id == id) {
+    const updatedDecks = state.decks.map((deck) => {
+      if (deck.id == id) {
           console.log("ENCONTROU")
-          if (evento.cards == null) {
-            evento.cards = [];
+          if (deck.cards == null) {
+            deck.cards = [];
           }
           const newCard = { ...cards, id: Math.random().toString() };
 
-          const updatedLista = [...evento.cards, newCard]; // atualiza a lista
-        //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
+          const updatedLista = [...deck.cards, newCard]; // atualiza a lista
          console.log(updatedLista);     
-          return { ...evento, cards: updatedLista }; //retorna a lista atualizada
+          return { ...deck, cards: updatedLista }; //retorna a lista atualizada
       }
-      return evento;
+      return deck;
     });
     saveDecks(updatedEvents);  
     return { ...state, decks: updatedEvents };
@@ -45,10 +44,10 @@ const actions = {
     };
   },
   createEvent(state, action) {
-    const evento = action.payload;
+    const deck = action.payload;
     //define um id aleatório como id
-    evento.id = Math.random();
-    const updatedDecks = [...state.decks, evento];
+    deck.id = Math.random();
+    const updatedDecks = [...state.decks, deck];
 
     saveDecks(updatedDecks);
     loadDecks(updatedDecks);
@@ -158,7 +157,6 @@ export const DecksProvider = (props) => {
   useEffect(() => {
     async function fetchData() {
       //carrega os decks do AsyncStorage utilizando a função loadDecks
-      // await saveDecks(decks)
       const loadedDecks = await loadDecks();
       const loadedProgress = await loadProgress();
       if(loadedDecks.decks.length !== 0){
@@ -167,13 +165,6 @@ export const DecksProvider = (props) => {
       }else{
         dispatch({ type: "gerarRandom", payload: decks });
       }
-      // if (loadedDecks.decks.length !== 0) {
-      // //se existirem decks carregados, despacha uma ação para carregar os decks no estado
-      //   dispatch({ type: "carregarDecks", payload: loadedDecks });
-      // } else {        
-      //   //se não, despacha uma ação para gerar decks aleatórios
-      //   dispatch({ type: "gerarRandom", payload: decks });
-      // }
     }
     fetchData();
   }, []);

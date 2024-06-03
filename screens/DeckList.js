@@ -3,9 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ListItem } from "react-native-elements";
 import DecksContext from "../Decks/DeckContextFile";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
-import EventsContext from "../User/UserContextFile";
-import TestsContext from "../Decks/TestContextFile";
-import { Icon, Button } from "@rneui/themed";
+import { Icon } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
@@ -111,7 +109,6 @@ export default (props) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.debugText}>Componente sendo renderizado...</Text> */}
       {state.decks.map(renderItem)}
     </View>
   );

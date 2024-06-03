@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffeaa7",
-    //justifyContent: 'center', // Center items vertically
     alignItems: "center", // Center items horizontally
   },
   input: {

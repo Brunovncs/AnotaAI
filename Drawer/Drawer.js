@@ -151,21 +151,6 @@ const screenOptions = {
   },
   drawerStyle: {
     backgroundColor: '#ffeaa7',
-    width: 240,
+    width: 180,
   },
-  drawerContentOptions: {
-    activeBackgroundColor: '#fff', /* bg color for active screen */
-    inactiveBackgroundColor: 'transparent', /* bg color for inactive screens */
-  },
-  drawerContentStyle: {
-    flex: 1,
-    backgroundColor: '#ffeaa7',
-  },
-  contentContainerStyle: {
-    marginTop: 50,
-    marginLeft: 10,
-  },
-  sceneContainerStyle: {
-    backgroundColor: '#ffeaa7',
-  }
 };

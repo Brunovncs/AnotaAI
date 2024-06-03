@@ -17,22 +17,12 @@ export default () => {
     const { state, dispatch } = useContext(DecksContext);
     const navigation = useNavigation();
     const route = useRoute();
-    // const [cards, SetCard] = useState(route.params?.cards || {});
-    // const cardId = route.params?.cardId;
-    // const { cards, cardId} = route.params;
 
     const [cards, SetCard] = useState(route.params.cards);
     const cardId = route.params?.cardId;
 
     console.log("ID: ", cardId);
     console.log("card: ", cards);
-
-
-//   const [card, SetCard] = useState({
-//     question: "",
-//     answer: "",
-//     isChecked: false
-//   });
 
   return (
     <View style={styles.container}>
@@ -83,7 +73,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffeaa7",
-    //justifyContent: 'center', // Center items vertically
     alignItems: "center", // Center items horizontally
   },
   input: {

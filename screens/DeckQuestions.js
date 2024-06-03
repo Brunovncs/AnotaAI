@@ -34,14 +34,6 @@ const DeckQuestions = () => {
     setShowAnswerButtons(false);
   }, [state.decks, deckId, state.progress]);
 
-  // useEffect(() => {
-  //   console.log("foi pra ca sem querer")
-  //   setShowAnswer(false);
-  //   setShowAnswerButtons(true);
-  //   setallAnswered(false);
-  //   setShowQuestion(true);
-  // }, [deckId]);
-
   const handleAnswer = (difficulty) => {
     setShowAnswer(false);
     setShowAnswerButtons(false);

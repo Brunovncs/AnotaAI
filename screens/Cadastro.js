@@ -31,26 +31,6 @@ export default ({ route, navigation }) => {
         placeholder="********"
         value={evento.senha}
       />
-
-      {/* <Button
-        title="Salvar"
-        onPress={() => {
-          //verifica se todos os campos foram preenchidos
-          if (evento.email && evento.senha) {
-            dispatch({
-              //cria ou atualiza o evento
-              type: evento.id ? "updateEvent" : "createEvent",
-              payload: evento,
-            });
-            navigation.goBack();
-          } else {
-            Alert.alert(
-              "Campos Vazios",
-              "Por favor, preencha todos os campos."
-            );
-          }
-        }}
-      /> */}
     <TouchableOpacity
       style={style.button}
       onPress={() => {

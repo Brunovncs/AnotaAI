@@ -7,20 +7,17 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Alert, // Import Alert
+  Alert,
 } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import users from "./User/users"; // Import the users list
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Drawer from "./Drawer/Drawer";
 import AddDeck from "./screens/AddDeck";
 import Cadastro from "./screens/Cadastro";
 import EventsContext, { EventsProvider } from "./User/UserContextFile";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import RedefinirSenha from "./screens/RedefinirSenha";
 import DecksContext, {DecksProvider} from "./Decks/DeckContextFile";
-import TestsContext, {TestsProvider} from "./Decks/TestContextFile";
 import AddCard from "./screens/AddCard";
 
 const Stack = createNativeStackNavigator();
