@@ -1,18 +1,39 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ListItem } from "react-native-elements";
 import DecksContext from "../Decks/DeckContextFile";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import EventsContext from "../User/UserContextFile";
 import TestsContext from "../Decks/TestContextFile";
 import { Icon, Button } from "@rneui/themed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default (props) => {
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   console.log("DECKS: "+state.decks);
+
+  const [decks, setDecks] = useState(state.decks);
+
+  useEffect(() => {
+    async function fetchDecks() {
+      try {
+        const savedDecks = await AsyncStorage.getItem("decks");
+        const decks = savedDecks ? JSON.parse(savedDecks) : [];
+        dispatch({ type: "loadDecksFromStorage", payload: { decks } });
+        setDecks(decks);
+      } catch (error) {
+        console.error("Erro ao carregar os decks do AsyncStorage", error);
+      }
+    }
+
+    if (isFocused) {
+      fetchDecks();
+    }
+  }, [isFocused]);
 
   const resetDeckProgress = (deckId) => {
     dispatch({

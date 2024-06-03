@@ -12,6 +12,7 @@ import DecksContext from "../Decks/DeckContextFile";
 import TestsContext from "../Decks/TestContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import decks from "../Decks/decks";
 
 export default () => {
   const navigation = useNavigation();
@@ -20,7 +21,7 @@ export default () => {
     cards: [],
   });
 
-  const {dispatch} = useContext(DecksContext);
+  const { dispatch } = useContext(DecksContext);
 
   return (
     <View style={styles.container}>
