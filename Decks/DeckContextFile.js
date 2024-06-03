@@ -92,6 +92,7 @@ const actions = {
       u.id === updated.id ? updated : u
     );
     saveDecks(updatedDecks);
+    loadDecks(updatedDecks);
     return {
       ...state,
       decks: updatedDecks,
@@ -104,7 +105,7 @@ const actions = {
     const updatedDecks = [...state.decks, evento];
 
     saveDecks(updatedDecks);
-    loadDecks(updatedDecks);
+    // loadDecks(updatedDecks);
     return {
       ...state,
       decks: updatedDecks,

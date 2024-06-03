@@ -142,8 +142,8 @@ const DeckQuestions = () => {
       }
     });
     dispatch({ type: "updateDecks", payload: { decks: updatedDecks } });
+    AsyncStorage.setItem('decks', JSON.stringify(state.decks));
   };
-
   
   const updateDeckProgress = (newIndex) => {
     dispatch({

@@ -12,26 +12,26 @@ const DeckList = (props = {}) => {
 
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  // const [decks, setDecks] = useState(state.decks);
+  const isFocused = useIsFocused()
+  const [decks, setDecks] = useState(state.decks);
 
   const identificadorUsuario = route.params?.identificadorUsuario;
 
   useEffect(() => {
     async function fetchDecks() {
       try {
-        
-        // const savedDecks = await AsyncStorage.getItem("decks");
+        const savedDecks = await AsyncStorage.getItem("decks");
 
         // console.log(state.decks)
-        // const decks = savedDecks ? JSON.parse(savedDecks) : [];
+        const decks = savedDecks ? JSON.parse(savedDecks) : [];
+
+        console.log(decks)
         
         // Filtrando os decks com base no userId
-        const filteredDecks = state.decks.filter(deck => deck.userId == identificadorUsuario);
-
-        // setDecks(filteredDecks);
+        const filteredDecks = decks.filter(deck => deck.userId == identificadorUsuario);
+        setDecks(filteredDecks);
         
-        // dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
+        dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
   
         // // Verificando o isChecked de cada carta (card) nos decks filtrados
         filteredDecks.forEach(deck => {
@@ -49,7 +49,7 @@ const DeckList = (props = {}) => {
     }
   }, [isFocused]);
 
-  const resetDeckProgress = (deckId) => {
+  const resetDeckProgress = async (deckId) => {
     dispatch({
       type: "updateDeckProgress",
       payload: {
@@ -57,22 +57,32 @@ const DeckList = (props = {}) => {
         progress: { currentQuestionIndex: 0 },
       },
     });
-
+  
     // Atualizar o estado decks após resetar o progresso
     const updatedDecks = state.decks.map((deck) => {
       if (deck.id === deckId) {
         return {
-          ...deck,
-          cards: deck.cards.map((card) => ({ ...card, isChecked: false })),
+         ...deck,
+          cards: deck.cards.map((card) => ({...card, isChecked: false })),
         };
       }
       return deck;
     });
+  
+    // Salvar as atualizações no AsyncStorage
+    try {
+      await AsyncStorage.setItem('decks', JSON.stringify(updatedDecks));
+    } catch (error) {
+      console.error("Erro ao salvar os decks no AsyncStorage", error);
+    }
+  
+    // Atualizar o estado global com os decks atualizados
     dispatch({
       type: "loadDecksFromStorage",
       payload: { decks: updatedDecks },
     });
   };
+  
 
   //função que exclui um evento específico
   function confirmEventDeletion(evento) {
