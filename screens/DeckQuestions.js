@@ -125,17 +125,26 @@ const DeckQuestions = () => {
   const updateDeckInContext = (deckId, updatedQuestion) => {
     const updatedDecks = state.decks.map(deck => {
       if (deck.id === deckId) {
+        const updatedCards = deck.cards.map(card => {
+          if (card.id === updatedQuestion.id) {
+            console.log("isChecked do handleanswer: ", updatedQuestion.isChecked); // Adicionando o log aqui
+            return updatedQuestion;
+          } else {
+            return card;
+          }
+        });
         return {
           ...deck,
-          cards: deck.cards.map(card => (card.id === updatedQuestion.id ? updatedQuestion : card))
+          cards: updatedCards
         };
+      } else {
+        return deck;
       }
-      return deck;
     });
-
     dispatch({ type: "updateDecks", payload: { decks: updatedDecks } });
   };
 
+  
   const updateDeckProgress = (newIndex) => {
     dispatch({
       type: "updateDeckProgress",

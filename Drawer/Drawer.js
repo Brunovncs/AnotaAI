@@ -68,7 +68,7 @@ export default ({props}) => {
                 const navigation = useNavigation(); // Use useNavigation hook here
                 return (
                   <Button
-                    onPress={() => navigation.navigate("Lista_de_Decks")}
+                    onPress={() => navigation.goBack()}
                     type="clear"
                     icon={<Icon name="arrow-left" size={25} color="white" />}
                   />

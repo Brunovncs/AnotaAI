@@ -15,42 +15,32 @@ import { useRoute } from '@react-navigation/native';
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [decks, setDecks] = useState(state.decks);
+  // const [decks, setDecks] = useState(state.decks);
 
   const identificadorUsuario = route.params?.identificadorUsuario;
-
-  console.log("IDENTIFICADOR_USUARIO:", identificadorUsuario);
-
-  console.log("DECKS: " + state.decks)
-
-  // useEffect(() => {
-  //   async function fetchDecks() {
-  //     try {
-  //       const savedDecks = await AsyncStorage.getItem("decks");
-  //       const decks = savedDecks ? JSON.parse(savedDecks) : [];
-  //       dispatch({ type: "loadDecksFromStorage", payload: { decks } });
-  //       setDecks(decks);
-  //     } catch (error) {
-  //       console.error("Erro ao carregar os decks do AsyncStorage", error);
-  //     }
-  //   }
-
-  //   if (isFocused) {
-  //     fetchDecks();
-  //   }
-  // }, [isFocused]);
 
   useEffect(() => {
     async function fetchDecks() {
       try {
-        const savedDecks = await AsyncStorage.getItem("decks");
-        const decks = savedDecks? JSON.parse(savedDecks) : [];
+        
+        // const savedDecks = await AsyncStorage.getItem("decks");
+
+        // console.log(state.decks)
+        // const decks = savedDecks ? JSON.parse(savedDecks) : [];
         
         // Filtrando os decks com base no userId
-        const filteredDecks = decks.filter(deck => deck.userId == identificadorUsuario);
+        const filteredDecks = state.decks.filter(deck => deck.userId == identificadorUsuario);
+
+        // setDecks(filteredDecks);
         
-        dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
-        setDecks(filteredDecks); // Atualizando o estado com os decks filtrados
+        // dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
+  
+        // // Verificando o isChecked de cada carta (card) nos decks filtrados
+        filteredDecks.forEach(deck => {
+          deck.cards.forEach(card => {
+            console.log("isChecked:", card.isChecked);
+          });
+        });
       } catch (error) {
         console.error("Erro ao carregar os decks do AsyncStorage", error);
       }
@@ -85,33 +75,11 @@ import { useRoute } from '@react-navigation/native';
   };
 
   const renderItem = (item) => {
-    // const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
-    // const cardsDecoradas = progress.currentQuestionIndex;
-    // const cardsRestantes = item.cards.length - cardsDecoradas;
-
-////////////////////////////////////////////////////////////////////
     const originalCards = item.cards.filter(card => card.isOriginal);
     const totalCards = originalCards.length;
-
-    const progress = state.progress[item.id] || { currentQuestionIndex: 0 };
     const cardsDecoradas = originalCards.filter(card => card.isChecked).length;
     const cardsRestantes = totalCards - cardsDecoradas;
-
-    decks.forEach((deck) => {
-      deck.cards.forEach((card) => {
-        console.log(
-          `Card ID: ${card.id}, isOriginal: ${card.isOriginal}, isChecked: ${card.isChecked}`
-        );
-      });
-    });
-    console.log("/////////////////////////")
-////////////////////////////////////////////////////////////////////
-
-    // console.log("originalCards: ", originalCards);
-    // console.log("cardsDecoradas: ", cardsDecoradas);
-    // console.log("cardsRestantes: ", cardsRestantes);
     
-    console.log("USERIDAAA: " + item.userId)
     if(item.userId == identificadorUsuario){
     return (
       <ListItem
@@ -145,7 +113,6 @@ import { useRoute } from '@react-navigation/native';
           size={30}
           color="white"
           onPress={() => {
-            console.log("Navigating to AddCard with:" + item.cards + "ITEM ID:" + item.id);
             props.navigation.navigate("AddCard", {cards: item.cards, cardId:item.id})}}
         />
       </ListItem.Content>
