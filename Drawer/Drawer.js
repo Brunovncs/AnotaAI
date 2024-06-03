@@ -9,7 +9,7 @@ import {
 } from "@react-navigation/drawer";
 import { Menu, Provider as PaperProvider } from "react-native-paper";
 import DecksContext, { DecksProvider } from "../Decks/DeckContextFile";
-import TestsContext, { TestsProvider } from "../Decks/TestContextFile";
+import EventsContext, {EventsProvider} from "../User/UserContextFile";
 
 import AddDeck from "../screens/AddDeck";
 import DeckList from "../screens/DeckList";
@@ -22,6 +22,7 @@ const Drawer = createDrawerNavigator();
 export default (props) => (
   <PaperProvider>
     <DecksProvider>
+      <EventsProvider>
       <Drawer.Navigator
         initialRouteName="Lista_de_Decks"
         screenOptions={screenOptions}
@@ -31,6 +32,7 @@ export default (props) => (
           component={DeckList}
           options={({ navigation }) => {
             useContext(DecksContext);
+            useContext(EventsContext);
             const { dispatch } = useContext(DecksContext);
             return {
               title: "Decks",
@@ -90,6 +92,7 @@ export default (props) => (
 
         {/* Outras telas Drawer aqui */}
       </Drawer.Navigator>
+      </EventsProvider>
     </DecksProvider>
   </PaperProvider>
 );

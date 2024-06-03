@@ -6,11 +6,55 @@ const DecksContext = createContext({});
 const initialState = { decks, progress: {} };
 
 const actions = {
+  deleteReserva(state, action) {
+    const { item, selectedDeck} = action.payload;//recebe os parâmetros enviados 
+
+    const updatedEvents = state.decks.map((evento) => {//mapeia o evento atualizado 
+      if(evento.id == selectedDeck){
+
+      if(evento.cards == null)//se nâo existir uma lista para esse evento ela é criada 
+          evento.cards = []
+      const updatedLista = evento.cards.filter((reserva) => reserva.id !== item);//filtra a lista de reservas para tirar a reserva com o cpf correspondente
+      return { ...evento, cards: updatedLista };//retorna a lista atualizada 
+
+  }
+    return evento;
+});
+
+    saveDecks(updatedEvents); //salva os eventos atualizados 
+    loadDecks(updatedEvents);
+
+    //retorna o estado com os eventos atualizados
+    console.log("RESULTADO: " + updatedEvents)
+    console.log("acabouuu")
+    return { ...state, decks: updatedEvents };
+  },
+  updateReservation(state, action) {
+    const { cardId, updatedReserva, id} = action.payload;
+    console.log("dentro da funçao cardId: " + cardId);
+    const updatedEvents = state.decks.map((evento) => {
+      if (evento.cards) {
+        console.log("dentro da funçao id do evento: " + evento.id);
+        if(evento.id == id){
+          console.log("entrou ids iguais");
+            const updatedLista = evento.cards.map((reserva) =>
+              reserva.id === id ? { ...reserva, ...updatedReserva } : reserva
+            );
+            return { ...evento, cards: updatedLista };//retorna o evento com a lista atualizada de reservas
+        }
+      }
+      return evento;
+    });
+    //salva os eventos atualizados no AsyncStorage
+    saveDecks(updatedEvents); 
+    loadDecks(updatedEvents);
+    //retorna o estado atualizado com os eventos atualizados
+    return { ...state, decks: updatedEvents };
+  },
   addCardtoDeck(state, action) {
     const { cards, id } = action.payload;
     const updatedEvents = state.decks.map((evento) => {
       if (evento.id == id) {
-          console.log("ENCONTROU")
           if (evento.cards == null) {
             evento.cards = [];
           }
@@ -18,7 +62,6 @@ const actions = {
 
           const updatedLista = [...evento.cards, newCard]; // atualiza a lista
         //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
-         console.log(updatedLista);     
           return { ...evento, cards: updatedLista }; //retorna a lista atualizada
       }
       return evento;
