@@ -30,8 +30,8 @@ export default (props) => (
           name="Lista_de_Decks"
           component={DeckList}
           options={({ navigation }) => {
-            useContext(TestsContext);
-            const { dispatch } = useContext(TestsContext);
+            useContext(DecksContext);
+            const { dispatch } = useContext(DecksContext);
             return {
               title: "Decks",
               headerRight: () => <HeaderMenu navigation={navigation} />,
@@ -42,7 +42,7 @@ export default (props) => (
           name="CardBrowser"
           component={CardBrowser}
           options={({ navigation }) => {
-            const { dispatch } = useContext(TestsContext);
+            const { dispatch } = useContext(DecksContext);
             return {
               title: "Perguntas",
             };
