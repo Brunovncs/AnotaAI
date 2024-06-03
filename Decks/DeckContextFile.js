@@ -6,6 +6,26 @@ const DecksContext = createContext({});
 const initialState = { decks, progress: {} };
 
 const actions = {
+  addCardtoDeck(state, action) {
+    const { cards, id } = action.payload;
+    const updatedEvents = state.decks.map((evento) => {
+      if (evento.id == id) {
+          console.log("ENCONTROU")
+          if (evento.cards == null) {
+            evento.cards = [];
+          }
+          const newCard = { ...cards, id: Math.random().toString() };
+
+          const updatedLista = [...evento.cards, newCard]; // atualiza a lista
+        //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
+         console.log(updatedLista);     
+          return { ...evento, cards: updatedLista }; //retorna a lista atualizada
+      }
+      return evento;
+    });
+    saveDecks(updatedEvents);  
+    return { ...state, decks: updatedEvents };
+  },
   loadDecksFromStorage(state, action) {
     const loadedDecks = action.payload.decks;
     return {
@@ -22,6 +42,31 @@ const actions = {
     return {
       ...state,
       decks: updatedDecks,
+    };
+  },
+  createEvent(state, action) {
+    const evento = action.payload;
+    //define um id aleatório como id
+    evento.id = Math.random();
+    const updatedTests = [...state.decks, evento];
+    saveTests(updatedTests);
+    console.log("deck salvo!");
+    return {
+      ...state,
+      decks: updatedTests,
+    };
+  },
+  updateSenha(state, action) {
+    const updated = action.payload;
+    //mapeia os decks existentes no estado, substituindo o evento com o mesmo id pelo evento atualizado
+    const updatedTests = state.decks.map((u) =>
+      u.email === updated.email ? updated : u
+    );
+    console.log("senha atualizada");
+    saveTests(updatedTests);
+    return {
+      ...state,
+      decks: updatedTests,
     };
   },
   addNewDeck(state, action) {
