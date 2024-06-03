@@ -8,40 +8,61 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import DecksContext from "../Decks/DeckContextFile";
 import TestsContext from "../Decks/TestContextFile";
+import DecksContext from "../Decks/DeckContextFile";
 import { ListItem, Avatar, Icon, Button } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default () => {
-  const navigation = useNavigation();
-  const [nomeDeck, SetNomeDeck] = useState({
-    name: "",
-    cards: [],
-  });
+    const { state, dispatch } = useContext(DecksContext);
+    const navigation = useNavigation();
+    const route = useRoute();
+    // const [cards, SetCard] = useState(route.params?.cards || {});
+    // const cardId = route.params?.cardId;
+    // const { cards, cardId} = route.params;
 
-  const {dispatch} = useContext(DecksContext);
+    const [cards, SetCard] = useState(route.params.cards);
+    const cardId = route.params?.cardId;
+
+    console.log("ID: ", cardId);
+    console.log("card: ", cards);
+
+
+//   const [card, SetCard] = useState({
+//     question: "",
+//     answer: "",
+//     isChecked: false
+//   });
 
   return (
     <View style={styles.container}>
       {/* Centered Text Input for Perguntas */}
-      <Text>Nome do Deck: </Text>
+      <Text>Pergunta: </Text>
       <TextInput
         style={[styles.input, { backgroundColor: "white" }]} // White background for this input
-        onChangeText={(name) => SetNomeDeck({ ...nomeDeck, name })}
-        value={nomeDeck.name}
-        placeholder="Digite o nome do deck"
+        onChangeText={(question) => SetCard({ ...cards, question })}
+        value={cards.question}
+        placeholder="Digite a frente do cartão"
       />
+        <Text>Resposta: </Text>
+      <TextInput
+        style={[styles.input, { backgroundColor: "white" }]} // White background for this input
+        onChangeText={(answer) => SetCard({ ...cards, answer })}
+        value={cards.answer}
+        placeholder="Digite o verso do cartão"
+      />      
       {/* Centered Round Border Button */}
       <TouchableOpacity
         onPress={() => {
           // Verifica se todos os campos foram preenchidos
-          if (nomeDeck.name) {
+          if (cards.answer && cards.question) {
             dispatch({
               // Cria ou atualiza o evento
-              type: "createEvent",
-              payload: nomeDeck,
-            });
+              type: "addCardtoDeck",
+              payload: {
+              cards,
+              id: cardId
+            }});
             navigation.goBack();
           } else {
             Alert.alert(

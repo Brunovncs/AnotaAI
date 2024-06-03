@@ -21,6 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RedefinirSenha from "./screens/RedefinirSenha";
 import DecksContext, {DecksProvider} from "./Decks/DeckContextFile";
 import TestsContext, {TestsProvider} from "./Decks/TestContextFile";
+import AddCard from "./screens/AddCard";
 
 const Stack = createNativeStackNavigator();
 
@@ -143,7 +144,7 @@ function TelaLogin() {
 export default function App() {
   return (
     <EventsProvider>
-      <TestsProvider>
+      <DecksProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={screenOptions}>
           <Stack.Screen
@@ -182,8 +183,8 @@ export default function App() {
             name="AddDeck"
             component={AddDeck}
             options={({ navigation }) => {
-              useContext(TestsContext);
-              const { dispatch } = useContext(TestsContext);
+              useContext(DecksContext);
+              const { dispatch } = useContext(DecksContext);
               return {
                 title: "Adicionar Deck",
               };
@@ -212,9 +213,22 @@ export default function App() {
               };
             }}
           />
+
+        <Stack.Screen
+            name="AddCard"
+            component={AddCard}
+            options={({ navigation }) => {
+              useContext(DecksContext);
+              const { dispatch } = useContext(DecksContext);
+              return {
+                title: "Adicionar Carta",
+              };
+            }}
+          /> 
+
         </Stack.Navigator>
       </NavigationContainer>
-      </TestsProvider>
+      </DecksProvider>
     </EventsProvider>
   );
 }

@@ -106,4 +106,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
   },
+  textContainer: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexDirection: "row", // Align items in a row
+    justifyContent: "space-between", // Space out the text and icon
+    alignItems: "center", // Center items vertically
+  },
 });

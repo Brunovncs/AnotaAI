@@ -1,7 +1,5 @@
 import React, { createContext, useEffect, useReducer } from "react";
-import {
-  Alert,
-} from 'react-native';
+import { Alert } from "react-native";
 import decks from "./decks";
 
 const TestsContext = createContext({});
@@ -9,15 +7,38 @@ const initialState = { decks };
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const actions = {
+  addCardtoDeck(state, action) {
+    const { cards, id } = action.payload;
+    const updatedEvents = state.decks.map((evento) => {
+      if (evento.id == id) {
+    console.log("ENCONTROU")
+          if (evento.cards == null) {
+            evento.cards = [];
+          }
+          const newCard = { ...cards, id: Math.random().toString() };
+
+          const updatedLista = [...evento.cards, newCard]; // atualiza a lista
+        //   const updatedLista = [...evento.cards,  cards]; //atualiza a lista
+         console.log(updatedLista);     
+          return { ...evento, cards: updatedLista }; //retorna a lista atualizada
+
+      }
+      return evento;
+    });
+
+    saveTests(updatedEvents);  
+
+    return { ...state, decks: updatedEvents };
+  },
   deleteEvent(state, action) {
     const evento = action.payload;
-      //filtra os decks existentes para remover o evento com o ID correspondente
+    //filtra os decks existentes para remover o evento com o ID correspondente
     const updatedTests = state.decks.filter((u) => u.id !== evento.id);
-    saveTests(updatedTests);//salva o evento atualizado no async storage 
+    saveTests(updatedTests); //salva o evento atualizado no async storage
     return {
-      ...state, 
+      ...state,
       decks: updatedTests,
-    }; 
+    };
   },
   createEvent(state, action) {
     const evento = action.payload;
@@ -49,7 +70,7 @@ const actions = {
     const updatedTests = state.decks.map((u) =>
       u.email === updated.email ? updated : u
     );
-    console.log("senha atualizada")
+    console.log("senha atualizada");
     saveTests(updatedTests);
     return {
       ...state,
@@ -73,9 +94,10 @@ const actions = {
 };
 async function deleteTests() {
   try {
-    await AsyncStorage.removeItem("decks");//remove decks do AsyncStorage 
+    await AsyncStorage.removeItem("decks"); //remove decks do AsyncStorage
     console.log("Usuarios removidos com sucesso");
-  } catch (error) {//captura os erros e mostra uma mensagem de erro 
+  } catch (error) {
+    //captura os erros e mostra uma mensagem de erro
     console.error("Erro ao remover os usuarios do AsyncStorage", error);
   }
 }
@@ -96,7 +118,7 @@ async function loadTests() {
     return { decks: decks ? JSON.parse(decks) : [] };
   } catch (error) {
     console.error("Erro ao carregar os usuarios do AsyncStorge", error);
-    return { decks: [] };//retorna decks vazio
+    return { decks: [] }; //retorna decks vazio
   }
 }
 
@@ -107,9 +129,9 @@ export const TestsProvider = (props) => {
 
       const loadedTests = await loadTests();
       if (loadedTests.decks.length !== 0) {
-      //se existirem decks carregados, despacha uma ação para carregar os decks no estado
+        //se existirem decks carregados, despacha uma ação para carregar os decks no estado
         dispatch({ type: "carregarTests", payload: loadedTests });
-      } else {        
+      } else {
         //se não, despacha uma ação para gerar decks aleatórios
         dispatch({ type: "gerarRandom", payload: decks });
       }

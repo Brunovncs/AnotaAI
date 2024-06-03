@@ -1,16 +1,30 @@
 import React, { useContext, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { Icon, Button } from "@rneui/themed";
 import TestsContext from "../Decks/TestContextFile"; // Certifique-se de que o caminho esteja correto
+import DecksContext from "../Decks/DeckContextFile";
 
 export default () => {
-  const { state } = useContext(TestsContext);
+  const { state } = useContext(DecksContext);
   const [selectedDeck, setSelectedDeck] = useState(state.decks[0]?.id || null);
 
   const renderCard = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.question}>{item.question}</Text>
-      <Text style={styles.answer}>{item.answer}</Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.question}>{item.question}</Text>
+        <Text style={styles.answer}>{item.answer}</Text>
+      </View>
+      <View style={styles.iconContainer}>
+        <Button
+          type="clear"
+          icon={<Icon name="edit" size={25} color="black" />}
+        />
+        <Button
+          type="clear"
+          icon={<Icon name="delete" size={25} color="black" />}
+        />
+      </View>
     </View>
   );
 
@@ -33,7 +47,7 @@ export default () => {
           <FlatList
             data={selectedDeckData.cards}
             renderItem={renderCard}
-            keyExtractor={(card) => card.id.toString()}
+            keyExtractor={(card) => card.id}
           />
         </View>
       )}
@@ -42,6 +56,29 @@ export default () => {
 };
 
 const styles = StyleSheet.create({
+  card: {
+    flexDirection: "row", // Arrange items in a row
+    alignItems: "center", // Center items vertically
+    justifyContent: "space-between", // Space out items horizontally
+    backgroundColor: "#4ba3c3",
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  textContainer: {
+    flex: 1, // Allow text to take available space
+  },
+  question: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  answer: {
+    fontSize: 14,
+    color: "white",
+  },
+  iconContainer: {
+    flexDirection: "row", // Arrange icons in a row
+  },
   container: {
     flex: 1,
     backgroundColor: "#ffeaa7",
@@ -63,20 +100,6 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#580c1f"
-  },
-  card: {
-    backgroundColor: "#4ba3c3",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  question: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  answer: {
-    fontSize: 15,
-    color: "white",
+    color: "#580c1f",
   },
 });
