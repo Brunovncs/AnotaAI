@@ -16,6 +16,19 @@ const actions = {
       decks: updatedEvents,
     }; 
   },
+  resetOriginalQuestionsChecked(state, action) {
+    const updatedDecks = state.decks.map((deck) => {
+      const updatedCards = deck.cards.map((card) => {
+        if (card.isOriginal) {
+          return { ...card, isChecked: false };
+        }
+        return card;
+      });
+      return { ...deck, cards: updatedCards };
+    });
+    saveDecks(updatedDecks); // Salva os decks atualizados no AsyncStorage
+    return { ...state, decks: updatedDecks };
+  },
   deleteReserva(state, action) {
     const { item, selectedDeck} = action.payload;//recebe os parâmetros enviados 
 
@@ -92,7 +105,6 @@ const actions = {
       u.id === updated.id ? updated : u
     );
     saveDecks(updatedDecks);
-    loadDecks(updatedDecks);
     return {
       ...state,
       decks: updatedDecks,

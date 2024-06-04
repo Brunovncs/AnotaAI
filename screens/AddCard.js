@@ -43,11 +43,18 @@ export default () => {
         onPress={() => {
           // Verifica se todos os campos foram preenchidos
           if (cards.answer && cards.question) {
+
+            const newCard = {
+              ...cards,
+               isChecked: false, // Define isChecked como false
+               isOriginal: true, // Define isOriginal como true
+             };
+
             dispatch({
               // Cria ou atualiza o evento
               type: "addCardtoDeck",
               payload: {
-              cards,
+              cards: newCard,
               id: cardId
             }});
             navigation.goBack();
