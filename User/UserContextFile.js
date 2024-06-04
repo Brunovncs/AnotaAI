@@ -88,16 +88,26 @@ const actions = {
     //retorna o estado atualizado com os users atualizados
     return { ...state, users: updatedEvents };
   },
-  deleteEvent(state, action) {
+  deleteUser(state, action) {
+    console.log("ENTROU NO APAGAR USUARIO")
     const evento = action.payload;
       //filtra os users existentes para remover o evento com o ID correspondente
-    const updatedEvents = state.users.filter((u) => u.id !== evento.id);
+    const updatedEvents = state.users.filter((u) => u.id != evento.id);
     saveEvents(updatedEvents);//salva o evento atualizado no async storage 
+    console.log("USUARIO DPS: " + updatedEvents)
     return {
       ...state, 
       users: updatedEvents,
     }; 
   },
+  loadUsersFromStorage(state, action) {
+    const loadedDecks = action.payload.users;
+    return {
+      ...state,
+      users: loadedDecks,
+    };
+  },
+
   createEvent(state, action) {
     const evento = action.payload;
     //define um id aleatório como id
@@ -161,12 +171,14 @@ async function deleteEvents() {
 async function saveEvents(users) {
   try {
     //converte users para uma string JSON e salva no AsyncStorage
+    console.log("Salvando no Async Storage")
     await AsyncStorage.setItem("users", JSON.stringify(users));
   } catch (error) {
     console.error("Erro ao salvar os usuarios no AsyncStorage:", error);
   }
 }
 async function loadEvents() {
+  console.log("CARREGABDO")
   try {
     //tenta obter os users salvos no AsyncStorage
     const users = await AsyncStorage.getItem("users");
