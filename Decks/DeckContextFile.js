@@ -69,8 +69,8 @@ const actions = {
             evento.cards = [];
           }
           let num = evento.cards.length;
-          // const newCard = { ...cards, id: Math.random().toString() };
-          const newCard = { ...cards, id: num, isOriginal: true, isChecked: false };
+          const newCard = { ...cards, id: Math.random().toString(),isOriginal: true, isChecked: false };
+          // const newCard = { ...cards, id: num, isOriginal: true, isChecked: false };
 
           const updatedLista = [...evento.cards, newCard]; // atualiza a listaa
           console.log("ID DO CARD NO DECK: " +  newCard.id)
