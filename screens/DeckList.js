@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { ListItem } from "react-native-elements";
 import DecksContext from "../Decks/DeckContextFile";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
@@ -12,7 +12,7 @@ const DeckList = (props = {}) => {
 
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const [decks, setDecks] = useState(state.decks);
 
   const identificadorUsuario = route.params?.identificadorUsuario;
@@ -25,17 +25,22 @@ const DeckList = (props = {}) => {
         // console.log(state.decks)
         const decks = savedDecks ? JSON.parse(savedDecks) : [];
 
-        console.log(decks)
-        
+        console.log(decks);
+
         // Filtrando os decks com base no userId
-        const filteredDecks = decks.filter(deck => deck.userId == identificadorUsuario);
+        const filteredDecks = decks.filter(
+          (deck) => deck.userId == identificadorUsuario
+        );
         setDecks(filteredDecks);
-        
-        dispatch({ type: "loadDecksFromStorage", payload: { decks: filteredDecks } });
-  
+
+        dispatch({
+          type: "loadDecksFromStorage",
+          payload: { decks: filteredDecks },
+        });
+
         // // Verificando o isChecked de cada carta (card) nos decks filtrados
-        filteredDecks.forEach(deck => {
-          deck.cards.forEach(card => {
+        filteredDecks.forEach((deck) => {
+          deck.cards.forEach((card) => {
             console.log("isChecked:", card.isChecked);
           });
         });
@@ -57,32 +62,43 @@ const DeckList = (props = {}) => {
         progress: { currentQuestionIndex: 0 },
       },
     });
-  
+
     // Atualizar o estado decks após resetar o progresso
-    const updatedDecks = state.decks.map((deck) => {
+    const updatedDecks = decks.map((deck) => {
       if (deck.id === deckId) {
+        // Filtrar cartas originais e manter apenas elas
+        const originalCards = deck.cards.filter((card) => card.isOriginal);
+
+        const updatedOriginalCards = originalCards.map((card) => ({
+          ...card,
+          isChecked: false, // Definir isChecked como false
+        }));
+
         return {
-         ...deck,
-          cards: deck.cards.map((card) => ({...card, isChecked: false })),
+          ...deck,
+          cards: updatedOriginalCards,
         };
       }
       return deck;
     });
-  
+
     // Salvar as atualizações no AsyncStorage
     try {
-      await AsyncStorage.setItem('decks', JSON.stringify(updatedDecks));
+      await AsyncStorage.setItem("decks", JSON.stringify(updatedDecks));
     } catch (error) {
       console.error("Erro ao salvar os decks no AsyncStorage", error);
     }
-  
+
+    setDecks(updatedDecks);
+
     // Atualizar o estado global com os decks atualizados
     dispatch({
       type: "loadDecksFromStorage",
       payload: { decks: updatedDecks },
     });
+
+
   };
-  
 
   //função que exclui um evento específico
   function confirmEventDeletion(evento) {
@@ -103,26 +119,28 @@ const DeckList = (props = {}) => {
   }
 
   const renderItem = (item) => {
-    const originalCards = item.cards.filter(card => card.isOriginal);
+    const originalCards = item.cards.filter((card) => card.isOriginal);
     const totalCards = originalCards.length;
-    const cardsDecoradas = originalCards.filter(card => card.isChecked).length;
+    const cardsDecoradas = originalCards.filter(
+      (card) => card.isChecked
+    ).length;
     const cardsRestantes = totalCards - cardsDecoradas;
 
     decks.forEach((deck) => {
       deck.cards.forEach((card) => {
-        console.log(
-          `Card ID: ${card.id}, isOriginal: ${card.isOriginal}, isChecked: ${card.isChecked}`
-        );
+        // console.log(
+        //   `Card ID: ${card.id}, isOriginal: ${card.isOriginal}, isChecked: ${card.isChecked}`
+        // );
       });
     });
-    console.log("/////////////////////////");
+    // console.log("/////////////////////////");
     ////////////////////////////////////////////////////////////////////
 
     // console.log("originalCards: ", originalCards);
     // console.log("cardsDecoradas: ", cardsDecoradas);
     // console.log("cardsRestantes: ", cardsRestantes);
 
-    console.log("USERIDAAA: " + item.userId);
+    // console.log("USERIDAAA: " + item.userId);
     if (item.userId == identificadorUsuario) {
       return (
         <ListItem
@@ -140,12 +158,6 @@ const DeckList = (props = {}) => {
               <ListItem.Subtitle style={styles.subtitle}>
                 Total de Cartas: {item.cards.length}
               </ListItem.Subtitle>
-              <ListItem.Subtitle style={styles.subtitle}>
-                Cartas Decoradas: {cardsDecoradas}
-              </ListItem.Subtitle>
-              <ListItem.Subtitle style={styles.subtitle}>
-                Cartas Restantes: {cardsRestantes}
-              </ListItem.Subtitle>
               <TouchableOpacity
                 style={styles.resetButton}
                 onPress={() => resetDeckProgress(item.id)}
@@ -158,12 +170,12 @@ const DeckList = (props = {}) => {
               size={30}
               color="white"
               onPress={() => {
-                console.log(
-                  "Navigating to AddCard with:" +
-                    item.cards +
-                    "ITEM ID:" +
-                    item.id
-                );
+                // console.log(
+                //   "Navigating to AddCard with:" +
+                //     item.cards +
+                //     "ITEM ID:" +
+                //     item.id
+                // );
                 props.navigation.navigate("AddCard", {
                   cards: item.cards,
                   cardId: item.id,
@@ -223,20 +235,22 @@ const styles = StyleSheet.create({
   itemContainer: {
     backgroundColor: "#4a69bd",
     marginBottom: 10,
-    borderRadius: 5,
+    borderRadius: 20,
   },
   deckName: {
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "bold",
     marginBottom: 5,
     color: "#fff", // Define a cor do texto como branca
   },
   subtitle: {
     color: "#fff", // Define a cor do texto como branca
+    fontSize: 20,
+    marginBottom: 20,
+
   },
   resetButton: {
     backgroundColor: "transparent",
-    alignSelf: "flex-end",
   },
   resetButtonText: {
     color: "#ffeaa7",

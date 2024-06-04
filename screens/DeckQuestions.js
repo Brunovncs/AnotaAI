@@ -20,131 +20,77 @@ const DeckQuestions = () => {
 
   useEffect(() => {
     const loadDeckAndAdditionalQuestions = async () => {
-      const selectedDeck = state.decks.find((deck) => deck.id === deckId);
-      const additionalLoadedQuestions = await loadAdditionalQuestions(deckId);
-      const mixedQuestions = [...selectedDeck.cards, ...additionalLoadedQuestions];
-      setDeck({ ...selectedDeck, cards: mixedQuestions });
+      try {
+        const savedDecks = await AsyncStorage.getItem("decks");
+        const decks = savedDecks ? JSON.parse(savedDecks) : [];
+        const selectedDeck = decks.find((deck) => deck.id === deckId);
 
-      const deckProgress = state.progress[deckId] || { currentQuestionIndex: 0 };
-      setCurrentQuestionIndex(deckProgress.currentQuestionIndex);
+        if (!selectedDeck) {
+          console.error(`Deck with id ${deckId} not found in AsyncStorage`);
+          return;
+        }
 
-      if (deckProgress.currentQuestionIndex <= mixedQuestions.length - 1) {
-        setShowQuestion(true);
-        setAllAnswered(false);
-      } else {
-        setShowQuestion(false);
-        setAllAnswered(true);
+        const additionalLoadedQuestions = await loadAdditionalQuestions(deckId);
+        const mixedQuestions = [
+          ...selectedDeck.cards,
+          ...additionalLoadedQuestions,
+        ];
+        setDeck({ ...selectedDeck, cards: mixedQuestions });
+
+        const deckProgress = state.progress[deckId] || {
+          currentQuestionIndex: 0,
+        };
+        setCurrentQuestionIndex(deckProgress.currentQuestionIndex);
+
+        if (deckProgress.currentQuestionIndex <= mixedQuestions.length - 1) {
+          setShowQuestion(true);
+          setAllAnswered(false);
+        } else {
+          setShowQuestion(false);
+          setAllAnswered(true);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar os decks do AsyncStorage", error);
       }
     };
 
     loadDeckAndAdditionalQuestions();
     setShowAnswer(false);
     setShowAnswerButtons(false);
-  }, [state.decks, deckId, state.progress]);
+  }, [deckId, state.progress]);
 
   const handleAnswer = async (difficulty) => {
-    setShowAnswer(false);
-    setShowAnswerButtons(false);
-    let repetitionCount = 0; // Fácil
-    if (difficulty === "medium") repetitionCount = 1; // Médio
-    if (difficulty === "hard") repetitionCount = 2; // Difícil
-
     const additionalQuestionsKey = `additionalQuestions_${deckId}`;
-    let additionalQuestions = [];
+    const additionalQuestions = await loadAdditionalQuestions(deckId);
 
-    try {
-      const storedQuestions = await AsyncStorage.getItem(
-        additionalQuestionsKey
-      );
-      if (storedQuestions) {
-        additionalQuestions = JSON.parse(storedQuestions);
-      }
-    } catch (error) {
-      console.error(
-        "Erro ao carregar perguntas adicionais do AsyncStorage: ",
-        error
-      );
-    }
+    const repetitionCount = difficulty === "medium" ? 1 : difficulty === "hard" ? 2 : 0;
 
-    // Encontrar o maior ID atual
-    let maxId = deck.cards.reduce(
-      (max, card) => (card.id > max ? card.id : max),
-      0
-    );
-    additionalQuestions.forEach((q) => {
-      if (q.id > maxId) maxId = q.id;
-    });
-    maxId - 2;
-
-    // Adicionar perguntas adicionais com novos IDs
+    let updatedAdditionalQuestions = [];
     for (let i = 0; i < repetitionCount; i++) {
-      maxId += 1;
-      console.log("maxId: ", maxId)
-      additionalQuestions.push({ ...currentQuestion, id: maxId, isOriginal: false, originalQuestionId: currentQuestion.id });
+      updatedAdditionalQuestions.push({
+        ...deck.cards[currentQuestionIndex],
+        id: Math.random().toString(),
+        isOriginal: false,
+        originalQuestionId: deck.cards[currentQuestionIndex].id,
+      });
     }
 
-    await saveAdditionalQuestions(deckId, additionalQuestions);
+    await saveAdditionalQuestions(deckId, [...additionalQuestions, ...updatedAdditionalQuestions]);
 
-    // Carrega perguntas adicionais após responder a uma pergunta
-    const additionalLoadedQuestions = await loadAdditionalQuestions(deckId);
-    const mixedQuestions = [...deck.cards, ...additionalLoadedQuestions];
-    setDeck({ ...deck, cards: mixedQuestions });
-
-    // Calcula o novo tamanho total de perguntas, incluindo perguntas originais e adicionais
-    const totalQuestionsLength = mixedQuestions.length;
-    setAdditionalQuestions(totalQuestionsLength);
-
-    // console.log("additionalQueastionnumber : ", additionalQuestionsnumber)
-    // console.log("totalQuestionsLength: ", mixedQuestions.length)
-    // console.log("currentQuestionIndex: ", currentQuestionIndex)
-    if (currentQuestionIndex < totalQuestionsLength - 1) {
-      const newIndex = currentQuestionIndex + 1;
-      setCurrentQuestionIndex(newIndex);
-      updateDeckProgress(newIndex);
-    } else {
-      // setAllAnswered(true);
-      // setShowQuestion(false);
-      updateDeckProgress(totalQuestionsLength);
-    }
-
-    checkAndMarkOriginalQuestionAsChecked(currentQuestion.id);
+    const newIndex = currentQuestionIndex + 1;
+    setCurrentQuestionIndex(newIndex);
+    updateDeckProgress(newIndex);
   };
 
-  const checkAndMarkOriginalQuestionAsChecked = (originalQuestionId) => {
-    const originalQuestion = deck.cards.find(card => card.isOriginal && card.id === originalQuestionId);
-    const extraQuestions = deck.cards.filter(card => card.originalQuestionId === originalQuestionId);
-
-    const allExtraQuestionsChecked = extraQuestions.every(card => card.isChecked);
-
-    if (originalQuestion && allExtraQuestionsChecked) {
-      originalQuestion.isChecked = true;
-      updateDeckInContext(deckId, originalQuestion);
+  const saveAdditionalQuestions = async (deckId, questions) => {
+    try {
+      await AsyncStorage.setItem(`additionalQuestions_${deckId}`, JSON.stringify(questions));
+    } catch (error) {
+      console.error("Error saving additional questions to AsyncStorage: ", error);
     }
   };
 
-  const updateDeckInContext = (deckId, updatedQuestion) => {
-    const updatedDecks = state.decks.map(deck => {
-      if (deck.id === deckId) {
-        const updatedCards = deck.cards.map(card => {
-          if (card.id === updatedQuestion.id) {
-            console.log("isChecked do handleanswer: ", updatedQuestion.isChecked); // Adicionando o log aqui
-            return updatedQuestion;
-          } else {
-            return card;
-          }
-        });
-        return {
-          ...deck,
-          cards: updatedCards
-        };
-      } else {
-        return deck;
-      }
-    });
-    dispatch({ type: "updateDecks", payload: { decks: updatedDecks } });
-    AsyncStorage.setItem('decks', JSON.stringify(state.decks));
-  };
-  
+
   const updateDeckProgress = (newIndex) => {
     dispatch({
       type: "updateDeckProgress",
@@ -160,32 +106,16 @@ const DeckQuestions = () => {
     setShowAnswerButtons(true);
   };
 
-  async function saveAdditionalQuestions(deckId, questions) {
-    try {
-      await AsyncStorage.setItem(`additionalQuestions_${deckId}`, JSON.stringify(questions));
-      // console.log("questionadd:", questions);
-    } catch (error) {
-      console.error(
-        "Erro ao salvar perguntas adicionais no AsyncStorage: ",
-        error
-      );
-    }
-  }
 
-  async function loadAdditionalQuestions(deckId) {
+  const loadAdditionalQuestions = async (deckId) => {
     try {
-      const questions = await AsyncStorage.getItem(
-        `additionalQuestions_${deckId}`
-      );
+      const questions = await AsyncStorage.getItem(`additionalQuestions_${deckId}`);
       return questions ? JSON.parse(questions) : [];
     } catch (error) {
-      console.error(
-        "Erro ao carregar perguntas adicionais do AsyncStorage: ",
-        error
-      );
+      console.error("Error loading additional questions from AsyncStorage: ", error);
       return [];
     }
-  }
+  };
 
   if (!deck) {
     return (
@@ -201,11 +131,11 @@ const DeckQuestions = () => {
 
   const currentQuestion = deck.cards[currentQuestionIndex];
 
-  if(!currentQuestion) {
+  if (!currentQuestion) {
     // console.log("allAnswered: ", allAnswered);
     // console.log("showQuestion: ", showQuestion);
     // console.log("showAnswer: ", showAnswer);
-  } 
+  }
 
   return (
     <View style={styles.container}>
