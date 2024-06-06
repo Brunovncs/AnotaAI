@@ -24,10 +24,6 @@ Anki is a flashcard program that uses a technique called spaced repetition to de
 - **React Navigation**: For handling app navigation
 - **rneuithemed**: For themed UI components
 
-## SCREENSHOTS
-
-Add some screenshots here to showcase your app's interface and features.
-
 ## INSTALLATION
 
 Follow these steps to get the development environment running:
@@ -66,10 +62,6 @@ We welcome contributions! Please follow these steps:
     git push origin feature/YourFeature
     ```
 5. Open a pull request
-
-## LICENSE
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
