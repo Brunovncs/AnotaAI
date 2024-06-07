@@ -72,29 +72,6 @@ export default (props) => {
 
   const selectedDeckData = state.decks.find((deck) => deck.id === selectedDeck);
 
-  // return (
-  //   <View style={styles.container}>
-  //     <Picker
-  //       selectedValue={selectedDeck}
-  //       onValueChange={(itemValue) => setSelectedDeck(itemValue)}
-  //       style={styles.picker}
-  //     >
-  //       {state.decks.map((deck) => (
-  //         <Picker.Item key={deck.id} label={deck.name} value={deck.id} />
-  //       ))}
-  //     </Picker>
-  //     {selectedDeckData && (
-  //       <View style={styles.deck}>
-  //         <Text style={styles.deckTitle}>{selectedDeckData.name}</Text>
-  //         <FlatList
-  //           data={selectedDeckData.cards}
-  //           renderItem={renderCard}
-  //           keyExtractor={(card) => card.id}
-  //         />
-  //       </View>
-  //     )}
-  //   </View>
-  // );
   return (
     <View style={styles.container}>
       <Picker

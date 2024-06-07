@@ -1,12 +1,13 @@
 {
   "expo": {
     "name": "AnotaAI",
-    "slug": "AnotaAI",
+    "slug": "anotaai",
     "version": "1.0.0",
     "extra": {
       "eas": {
-        "projectId": "626fc73a-f464-4cd3-a9c5-f2423c1a81c4"
+        "projectId": "688d12a4-5cf7-4388-b953-9fe8b1857332"
       }
-    }
+    },
+    "owner": "brnuo"
   }
 }

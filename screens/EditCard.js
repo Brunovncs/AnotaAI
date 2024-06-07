@@ -7,11 +7,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 
 
 export default () => {
-//   const { state, dispatch } = useContext(DeckContextFile);
-//   //recebe os parametros 
-//   const [listaItem, SetListaItem] = useState(route.params?.listaItems || {});
-//   const eventoId = route.params?.eventoId;
-
   const { state, dispatch } = useContext(DecksContext);
   const navigation = useNavigation();
   const route = useRoute();

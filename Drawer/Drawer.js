@@ -86,15 +86,6 @@ export default ({ props }) => {
                 };
               }}
             />
-
-            {/* <Drawer.Screen // Tela de decks
-
-        />
-        <Drawer.Screen // ...
-
-        /> */}
-
-            {/* Outras telas Drawer aqui */}
           </Drawer.Navigator>
         </EventsProvider>
       </DecksProvider>

@@ -126,21 +126,6 @@ const DeckList = (props = {}) => {
     ).length;
     const cardsRestantes = totalCards - cardsDecoradas;
 
-    decks.forEach((deck) => {
-      deck.cards.forEach((card) => {
-        // console.log(
-        //   `Card ID: ${card.id}, isOriginal: ${card.isOriginal}, isChecked: ${card.isChecked}`
-        // );
-      });
-    });
-    // console.log("/////////////////////////");
-    ////////////////////////////////////////////////////////////////////
-
-    // console.log("originalCards: ", originalCards);
-    // console.log("cardsDecoradas: ", cardsDecoradas);
-    // console.log("cardsRestantes: ", cardsRestantes);
-
-    // console.log("USERIDAAA: " + item.userId);
     if (item.userId == identificadorUsuario) {
       return (
         <ListItem
@@ -170,12 +155,6 @@ const DeckList = (props = {}) => {
               size={30}
               color="white"
               onPress={() => {
-                // console.log(
-                //   "Navigating to AddCard with:" +
-                //     item.cards +
-                //     "ITEM ID:" +
-                //     item.id
-                // );
                 props.navigation.navigate("AddCard", {
                   cards: item.cards,
                   cardId: item.id,
